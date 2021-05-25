@@ -1,0 +1,20 @@
+---
+title: "R Analysis"
+output: html_notebook
+---
+
+#Setup
+
+```{r}
+setwd("F:/Bachelor/Daten/Analysis")
+library(ggplot2)
+library(readxl)
+```
+
+#Loading Data
+
+```{r}
+Results <- read_excel("Results.xlsx")
+Results
+```
+
