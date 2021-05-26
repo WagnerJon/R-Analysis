@@ -3,11 +3,39 @@ title: "RTrack Analysis"
 author: "Jonas Wagner"
 date: "`r Sys.Date()`"
 output:
-    html_document:
-    html_notebook: toc:TRUE number_sections:TRUE
-    df_print: paged
-    pdf_document: default
+  rmdformats::downcute:
+    self_contained: true
 ---
+
+
+```{r setup, include=FALSE}
+library(knitr)
+library(rmdformats)
+require("knitr")
+knitr::opts_chunk$set(echo = TRUE,fig.width = 7,fig.height = 4)
+opts_knit$set(root.dir = "F:/Bachelor/Daten/Bulk_all")
+library(Rtrack)
+library(knitr)
+library(DT)
+library(dplyr)
+library(ggplot2)
+library(readxl)
+library(ggsci)
+library(tidyverse)
+library(ggh4x)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+	             cache=TRUE,
+               prompt=FALSE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
+```
+
 ***
 ## Table of Contents {#anchor99}
 
@@ -34,25 +62,11 @@ output:
   * [Number of old goal crossings](#anchor19)
   * [Time in old goal zone](#anchor20)
   * [Mean Initial heading error](#anchor21)
-* [](#anchor22)
+* [Layout Test](#anchor22)
 
-```{r setup, include=FALSE, echo=FALSE}
-require("knitr")
-knitr::opts_chunk$set(echo = TRUE,fig.width = 7,fig.height = 4)
-opts_knit$set(root.dir = "F:/Bachelor/Daten/Bulk_all")
-library(Rtrack)
-library(knitr)
-library(DT)
-library(dplyr)
-library(ggplot2)
-library(readxl)
-library(ggsci)
-library(tidyverse)
-library(ggh4x)
-library(rmdformats)
-```
-***
-## Importing Data {#anchor}
+***  
+
+## Importing Data{#anchor}
 
 ```{r import,results=FALSE}
 cluster = parallel::makeCluster(rep("localhost", parallel::detectCores()), type = "SOCK")
@@ -60,8 +74,8 @@ experiment = Rtrack::read_experiment("Experiment_description2.xlsx", format = "E
 #Closing multicore cluster to reduce system load
 parallel::stopCluster(cluster)
 ```
-***
-## Analysis of experiment metrics {#anchor2}
+***  
+## Analysis of experiment metrics{#anchor2}
 
 These metrics can be compared and extracted from the pure track files.
 
@@ -76,9 +90,12 @@ Rtrack::plot_variable("path.length", experiment = experiment, factor = "Age_grou
 Rtrack::plot_variable("path.length", experiment = experiment, factor = "Housing", exclude.probe = TRUE,lwd = 2)
 Rtrack::plot_variable("path.length", experiment = experiment, factor = "All", exclude.probe = TRUE,lwd = 2)
 ```
-Note that the probe trials have been omitted from these plots.  
+Note that the probe trials have been omitted from these plots.
+
 [back to top](#anchor99)
-***
+
+***  
+
 ## Heatmap {#anchor3}
 ```{r heatmap}
 wt.metrics = experiment$metrics[experiment$factors$Strain == "WT" &
@@ -101,7 +118,9 @@ Rtrack::plot_density(PS1.metrics, title = "PS1dE9 Heatmap",
                      col = colorRampPalette(c("#000C9E", "#00FEF6", "#FE009E"))(100))
 ```
 [back to top](#anchor99)
-***
+
+***  
+
 ## Heatmap_reversal {#anchor4}
 ```{r heatmap reversal}
 wtr.metrics = experiment$metrics[experiment$factors$Strain == "WT" &
@@ -122,13 +141,16 @@ Rtrack::plot_density(APPr.metrics, title = "APPswe_reversal Heatmap",
 Rtrack::plot_density(PS1r.metrics, title = "PS1dE9_reversal Heatmap",
                      col = colorRampPalette(c("#000C9E", "#00FEF6", "#FE009E"))(100))
 ```
-[back to top](#anchor99)
-***
+[back to top](#anchor99)  
+  
+***  
+
 ## Calling strategies {#anchor5}
 ```{r}
 strategies = Rtrack::call_strategy(experiment$metrics)
 ```
-***
+***  
+
 ## Thresholding strategies {#anchor6}
 
 limits called strategies to those, where confidence is greater than 40%
@@ -136,16 +158,20 @@ limits called strategies to those, where confidence is greater than 40%
 ```{r}
 dim(Rtrack::threshold_strategies(strategies, 0.4)$calls)
 ```
-[back to top](#anchor99)
-***
+[back to top](#anchor99)  
+
+***  
+
 ## Plotting strategies of all age groups combined {#anchor7}
 ```{r}
 par(mfrow = c(2, 2))
 Rtrack::plot_strategies(strategies, experiment = experiment, factor = "Strain",
     exclude.probe = TRUE)
 ```
-[back to top](#anchor99)
-***
+[back to top](#anchor99)  
+  
+***  
+
 ## Plotting thresholded strategies of all age groups combined {#anchor8}
 ```{r}
 par(mfrow = c(2, 2))
@@ -153,16 +179,21 @@ Rtrack::plot_strategies(Rtrack::threshold_strategies(strategies, 0.4), experimen
                         factor = "Strain", exclude.probe = TRUE)
 ```
 [back to top](#anchor99)
-***
-## Saving the results {#anchor9}
+  
+***  
+
+## Saving the results {#anchor9}  
+
 Here we export the results of the analyzed Track Files into a data.frame, to analyse them further.
 ```{r}
 results = Rtrack::export_results(experiment)
 datatable(results, rownames = FALSE, filter="top", options = list(pageLength = 5, scrollX=T) )
 ```
 [back to top](#anchor99)
-***
-## Plotting with ggplot2 {#anchor10}
+  
+***  
+
+## Plotting with ggplot2 {#anchor10}  
 ```{r warning=FALSE}
 library(ggplot2)
 library(readxl)
@@ -176,7 +207,8 @@ Results
 
 ## CAREFUL!!! The graphs below still include the probe trials (day 7 trial 1). To remove them add:   Probe=='FALSE' to filter{#anchor11}   
 
-***
+***  
+
 ## Path Length Graphs {#anchor12}
 ```{r path length}
 
@@ -240,9 +272,11 @@ ggplot(aes(x=`_Day`,y=path.length, fill=Age_group))+geom_boxplot()+
        title="Mean Path length PS1dE9 ENR")+scale_fill_jco()+
   facet_wrap(~Age_group)
 ```
-[back to top](#anchor99)
-***
-## Latency Graphs{#anchor13}
+[back to top](#anchor99)  
+  
+***  
+  
+## Latency Graphs {#anchor13}
 ```{r Latency}
 WT_STD %>%
   mutate(WT_STD, `_Day`=fct_relevel(`_Day`,"1","2","3","4","5","6","7","8","9","10"))%>%
@@ -294,8 +328,10 @@ ggplot(aes(x=`_Day`,y=latency.to.goal, fill=Age_group))+geom_boxplot()+
        title="Mean Latency in s PS1dE9 ENR")+scale_fill_jco()+
   facet_wrap(~Age_group)
 ```
-[back to top](#anchor99)
-***
+[back to top](#anchor99) 
+  
+***   
+
 ## UPDATED Heatmap_probe {#anchor14}
 ```{r filtering for heatmaps, include=FALSE}
 #############Probe_Trials##################
@@ -425,7 +461,8 @@ Rtrack::plot_density(dTgpenr.metrics, title = "dTg Probe Heatmap ENR 3-25mo",   
 Rtrack::plot_density(APPpenr.metrics, title = "APPswe Probe Heatmap ENR 3-25mo", col = colorRampPalette(c("#000C9E", "#00FEF6", "#FE009E"))(100))
 Rtrack::plot_density(PS1penr.metrics, title = "PS1dE9 Probe Heatmap ENR 3-25mo", col = colorRampPalette(c("#000C9E", "#00FEF6", "#FE009E"))(100))
 ```
-WT -> dTg -> APPswe -> PS1dE9
+WT -> dTg -> APPswe -> PS1dE9  
+
 [back to top](#anchor99)
 ```{r heatmap probe Age_groups}
 par(mfrow = c(1, 3))
@@ -482,8 +519,10 @@ Rtrack::plot_density(PS1penr3.metrics, title = "PS1dE9 Probe Heatmap ENR 3mo",
 Rtrack::plot_density(PS1penr25.metrics, title = "PS1dE9 Probe Heatmap ENR 17-25mo",
   col = colorRampPalette(c("#000C9E", "#00FEF6", "#FE009E"))(100))
 ```
-[back to top](#anchor99)
-***
+[back to top](#anchor99)  
+  
+***  
+
 ## UPDATED Path Length Graphs {#anchor15}
 ```{r path length updated}
 
@@ -516,8 +555,10 @@ Boxplot explanation:
 Middle line in box -> Median   
 Box -> shows middle 50% of data(Distance between 1. and 3. Quartil)   
 Whisker(vertikal lines) -> show upper/lower 25% of data w/o outliers   
-Points -> outlier   
-***
+Points -> outlier
+  
+***  
+
 ## UPDATED Velocity (Mean) Graphs {#anchor16}
 ```{r velocity updated}
 
@@ -544,16 +585,20 @@ ggplot(aes(x=`_Day`,y=mean.velocity, fill=Condition))+geom_boxplot()+
        y="Average Velocity",
        title="Mean Velocity 17-25mo mice")+scale_fill_manual(values = c("dTg_ENR" = "#6c7ed7", "dTg_STD" = "#909ef3","WT_ENR" = "#9f48a3", "WT_STD" = "#ce73cf","APPswe_ENR" = "#c85632", "APPswe_STD" = "#e9724b","PS1dE9_ENR" = "#9f9201", "PS1dE9_STD" = "#cab95b"))
 ```
-[back to top](#anchor99)
-***
-## UPDATED Strategy (Thresholded) Graphs {#anchor17}
+[back to top](#anchor99)  
+  
+***  
+
+## UPDATED Strategy (Thresholded) Graphs {#anchor17}  
 ```{r}
 par(mfrow = c(2, 2))
 Rtrack::plot_strategies(Rtrack::threshold_strategies(strategies, 0.4), experiment = experiment,
                         factor = "All", exclude.probe = TRUE)
 ```
 [back to top](#anchor99)
-***
+  
+***  
+
 ## Probe Trial Number of Goals Crossings {#anchor18}
 ```{r Number of Goal Crossings}
 
@@ -577,7 +622,9 @@ ggplot(aes(x=`Strain`,y=goal.crossings, fill=Housing))+geom_boxplot()+
        y="Number of Goal Crossings",
        title="Probe Trial Number of Goal Crossings 17-25mo mice")+scale_fill_manual(values = c("ENR"="#b3669e","STD"="#98984d"))
 ```
-***
+  
+***  
+
 ## Probe Trial Number of former Goals Crossings {#anchor19}
 ```{r Number of old Goal Crossings}
 
@@ -601,7 +648,9 @@ mo25.probe  %>%
        y="Number of Old Goal Crossings",
        title="Probe Trial Number of former Goal Crossings 17-25mo mice")+scale_fill_manual(values = c("ENR"="#b3669e","STD"="#98984d"))
 ```
-***
+  
+***  
+  
 ## Probe Trial Time in old goal zone {#anchor20}
 ```{r Time spent old Goal}
 
@@ -625,7 +674,9 @@ mo25.probe  %>%
        y="Time in s",
        title="Probe Trial Time spent in old goal 17-25mo mice")+scale_fill_manual(values = c("ENR"="#b3669e","STD"="#98984d"))
 ```
-***
+  
+***  
+  
 ## Probe Trial Mean Initial heading error {#anchor21}
 ```{r Mean Distance old goal}
 
@@ -649,11 +700,12 @@ mo25.probe  %>%
        y="Initial heading error in ???",
        title="Probe Trial Mean Initial heading error 17-25mo mice")+scale_fill_manual(values = c("ENR"="#b3669e","STD"="#98984d"))
 ```
-# Testing Layout Options {.tabset .tabset-fade .tabset-pills}
-***
+  
+# Testing Layout Options {.tabset .tabset-fade .tabset-pills #anchor22} 
+  
+***  
 
-
-## 3 Months
+## 3 Months  
 ```{r}
 mo3.probe %>%
   ggplot(aes(x=`Strain`,y=`mean.initial.heading.error`, fill=Housing))+geom_boxplot()+
@@ -661,9 +713,8 @@ mo3.probe %>%
        y="Initial heading error in %??",
        title="Probe Trial Mean Initial heading error 3mo mice")+scale_fill_manual(values = c("ENR"="#b3669e","STD"="#98984d"))
 ```
-
-
-## 13-14 Months
+  
+## 13-14 Months  
 ```{r}
 mo14.probe  %>%
   ggplot(aes(x=`Strain`,y=`mean.initial.heading.error`, fill=Housing))+geom_boxplot()+
@@ -671,8 +722,7 @@ mo14.probe  %>%
        y="Initial heading error in %??",
        title="Probe Trial Mean Initial heading error 13-14mo mice")+scale_fill_manual(values = c("ENR"="#b3669e","STD"="#98984d"))
 ```
-
-
+  
 ## 17-25 Months
 ```{r}
 mo25.probe  %>%
