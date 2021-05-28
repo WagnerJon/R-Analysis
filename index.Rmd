@@ -63,18 +63,20 @@ opts_knit$set(width=75)
   * [Time in old goal zone](#anchor20)
   * [Mean Initial heading error](#anchor21)
 * [Layout Test](#anchor22)
+  * [Probe Trial Mean Distance old goal](#anchor23)  
+* [Arena Quadrant Problem](#anchor24)
 
-***  
+*** 
 
 ## Importing Data{#anchor}
-
+Here a multicore CPU cluster is opened to reduce experiment reading times. This cluster is closed after the execution of the code. 
 ```{r import,results=FALSE}
 cluster = parallel::makeCluster(rep("localhost", parallel::detectCores()), type = "SOCK")
 experiment = Rtrack::read_experiment("Experiment_description2.xlsx", format = "Excel", cluster = cluster) 
-#Closing multicore cluster to reduce system load
 parallel::stopCluster(cluster)
 ```
 ***  
+
 ## Analysis of experiment metrics{#anchor2}
 
 These metrics can be compared and extracted from the pure track files.
@@ -197,8 +199,7 @@ datatable(results, rownames = FALSE, filter="top", options = list(pageLength = 5
 ```{r warning=FALSE}
 library(ggplot2)
 library(readxl)
-Rtrack::export_results(experiment, file = "Results3.xlsx")
-Results=read_excel("Results3.xlsx")
+Results=read_excel("Results3.xlsx", col_types=c("text","text","text","text","text","text","logical","numeric","text","text","text","numeric","text","numeric","text","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric"))
 ggplot(Results, aes(x=`_Day`,y=path.length,color=factor(Strain)))+geom_jitter()
 Results
 
@@ -594,8 +595,10 @@ ggplot(aes(x=`_Day`,y=mean.velocity, fill=Condition))+geom_boxplot()+
 par(mfrow = c(2, 2))
 Rtrack::plot_strategies(Rtrack::threshold_strategies(strategies, 0.4), experiment = experiment,
                         factor = "All", exclude.probe = TRUE)
-```
-[back to top](#anchor99)
+```  
+
+[back to top](#anchor99)  
+
   
 ***  
 
@@ -622,7 +625,9 @@ ggplot(aes(x=`Strain`,y=goal.crossings, fill=Housing))+geom_boxplot()+
        y="Number of Goal Crossings",
        title="Probe Trial Number of Goal Crossings 17-25mo mice")+scale_fill_manual(values = c("ENR"="#b3669e","STD"="#98984d"))
 ```
-  
+   
+[back to top](#anchor99)  
+
 ***  
 
 ## Probe Trial Number of former Goals Crossings {#anchor19}
@@ -648,6 +653,8 @@ mo25.probe  %>%
        y="Number of Old Goal Crossings",
        title="Probe Trial Number of former Goal Crossings 17-25mo mice")+scale_fill_manual(values = c("ENR"="#b3669e","STD"="#98984d"))
 ```
+   
+[back to top](#anchor99)  
   
 ***  
   
@@ -674,11 +681,13 @@ mo25.probe  %>%
        y="Time in s",
        title="Probe Trial Time spent in old goal 17-25mo mice")+scale_fill_manual(values = c("ENR"="#b3669e","STD"="#98984d"))
 ```
+
+[back to top](#anchor99)  
   
 ***  
   
 ## Probe Trial Mean Initial heading error {#anchor21}
-```{r Mean Distance old goal}
+```{r Mean Initial heading error}
 
 mo3.probe=filter(Results, Age_group=='3'&`_Day`=='7'&`_Trial`=='1')
 mo14.probe=filter(Results, Age_group=='13-14'&`_Day`=='7'&`_Trial`=='1')
@@ -700,6 +709,8 @@ mo25.probe  %>%
        y="Initial heading error in ???",
        title="Probe Trial Mean Initial heading error 17-25mo mice")+scale_fill_manual(values = c("ENR"="#b3669e","STD"="#98984d"))
 ```
+  
+[back to top](#anchor99)  
   
 # Testing Layout Options {.tabset .tabset-fade .tabset-pills #anchor22} 
   
@@ -731,4 +742,54 @@ mo25.probe  %>%
        y="Initial heading error in ???",
        title="Probe Trial Mean Initial heading error 17-25mo mice")+scale_fill_manual(values = c("ENR"="#b3669e","STD"="#98984d"))
 ```
+[back to top](#anchor99) 
 
+# Probe Trial Mean Distance old goal {.tabset .tabset-fade .tabset-pills #anchor23}  
+  
+***  
+  
+## 3 Months  
+```{r mean dist old goal 3months}
+mo3.probe %>%
+  ggplot(aes(x=`Strain`,y=`mean.d.old.goal`, fill=Housing))+geom_boxplot()+
+    labs(x="Condition",
+       y="Distance",
+       title="Probe Trial Mean Distance old goal 3mo mice")+scale_fill_manual(values = c("ENR"="#b3669e","STD"="#98984d"))
+```
+    
+## 13-14 Months  
+```{r}
+mo14.probe  %>%
+  ggplot(aes(x=`Strain`,y=`mean.d.old.goal`, fill=Housing))+geom_boxplot()+
+    labs(x="Condition",
+       y="Distance",
+       title="Probe Trial Mean Distance old goal 13-14mo mice")+scale_fill_manual(values = c("ENR"="#b3669e","STD"="#98984d"))
+```
+    
+## 17-25 Months
+```{r}
+mo25.probe  %>%
+  ggplot(aes(x=`Strain`,y=`mean.d.old.goal`, fill=Housing))+geom_boxplot()+
+    labs(x="Condition",
+       y="Distance",
+       title="Probe Trial Mean Distance old goal 17-25mo mice")+scale_fill_manual(values = c("ENR"="#b3669e","STD"="#98984d"))
+```
+  
+# Arena Quadrant Problem {#anchor24}
+
+***  
+
+[back to top](#anchor99)  
+
+```{r}
+knitr::include_graphics("Watermaze_Setup.png")
+```
+In Ethovision those Quadrants are marked (NE, SE, SW, NW).  
+In contrast to that, the quadrants that can be analyzed with RTrack are called as below:  
+*"time.in.zone.n.quadrant"  
+*"time.in.zone.e.quadrant"        
+*"time.in.zone.s.quadrant"  
+*"time.in.zone.w.quadrant"  
+```{r}
+knitr::include_graphics("Watermaze_Quadrant.png")
+```
