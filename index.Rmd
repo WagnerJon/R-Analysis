@@ -793,3 +793,97 @@ In contrast to that, the quadrants that can be analyzed with RTrack are called a
 ```{r}
 knitr::include_graphics("Watermaze_Quadrant.png")
 ```
+
+
+## t-Tests (time in old goal zone of probe trials) between Age Groups {.tabset .tabset-fade .tabset-pills #anchor25}
+  
+***  
+
+### 3 / 13-14
+```{r}
+t.test(mo3.probe$time.in.zone.old.goal,mo14.probe$time.in.zone.old.goal)
+```
+  
+### 3 / 17-25  
+```{r}
+t.test(mo3.probe$time.in.zone.old.goal,mo25.probe$time.in.zone.old.goal)
+```
+  
+### 13-14 / 17-25  
+```{r}
+t.test(mo14.probe$time.in.zone.old.goal,mo25.probe$time.in.zone.old.goal)
+```
+## {-}
+
+no significance between the overall groups
+
+<br>  
+
+## t-Tests (time in old goal zone of probe trials) between Strains & Housings of Age Group 17-25 {.tabset .tabset-fade .tabset-pills #anchor26}
+  
+***  
+
+### 17-25 WT STD/ENR
+```{r}
+WTS.mo25.probe=filter(mo25.probe, Strain=='WT'&`Housing`=='STD')
+WTE.mo25.probe=filter(mo25.probe, Strain=='WT'&`Housing`=='ENR')
+t.test(WTS.mo25.probe$time.in.zone.old.goal,WTE.mo25.probe$time.in.zone.old.goal)
+```  
+### 13-14 WT STD/ENR
+```{r}
+WTS.mo14.probe=filter(mo14.probe, Strain=='WT'&`Housing`=='STD')
+WTE.mo14.probe=filter(mo14.probe, Strain=='WT'&`Housing`=='ENR')
+t.test(WTS.mo14.probe$time.in.zone.old.goal,WTE.mo14.probe$time.in.zone.old.goal)
+```  
+### 3 WT STD/ENR
+```{r}
+WTS.mo3.probe=filter(mo3.probe, Strain=='WT'&`Housing`=='STD')
+WTE.mo3.probe=filter(mo3.probe, Strain=='WT'&`Housing`=='ENR')
+t.test(WTS.mo3.probe$time.in.zone.old.goal,WTE.mo3.probe$time.in.zone.old.goal)
+```  
+## {-}
+
+no significance found  
+
+<br>  
+
+## t-Tests (Path length of all trials) between Strains {.tabset .tabset-fade .tabset-pills #anchor27}
+  
+***  
+
+### 17-25 WT/dTg
+```{r}
+mo25.WT=filter(mo25, Strain=="WT")
+mo25.dTg=filter(mo25, Strain=="dTg")
+t.test(mo25.WT$path.length,mo25.dTg$path.length)
+```  
+### 17-25 WT/PS1dE9
+```{r}
+mo25.WT=filter(mo25, Strain=="WT")
+mo25.PS=filter(mo25, Strain=="PS1dE9")
+t.test(mo25.WT$path.length,mo25.PS$path.length)
+```  
+### 17-25 WT/APPswe
+```{r}
+mo25.WT=filter(mo25, Strain=="WT")
+mo25.AP=filter(mo25, Strain=="APPswe")
+t.test(mo25.WT$path.length,mo25.AP$path.length)
+```
+### 17-25 PS1dE9/APPswe
+```{r}
+mo25.PS=filter(mo25, Strain=="PS1dE9")
+mo25.AP=filter(mo25, Strain=="APPswe")
+t.test(mo25.PS$path.length,mo25.AP$path.length)
+```  
+### 17-25 dTg/PS1dE9
+```{r}
+mo25.dTg=filter(mo25, Strain=="dTg")
+mo25.AP=filter(mo25, Strain=="PS1dE9")
+t.test(mo25.dTg$path.length,mo25.PS$path.length)
+```  
+### 17-25 dTg/APPswe
+```{r}
+mo25.dTg=filter(mo25, Strain=="dTg")
+mo25.AP=filter(mo25, Strain=="APPswe")
+t.test(mo25.dTg$path.length,mo25.AP$path.length)
+```
