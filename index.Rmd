@@ -42,16 +42,17 @@ opts_knit$set(width=75)
 * [Importing Data](#anchor)  
 * [Analysis of experiment metrics](#anchor2)  
 * [Heatmap](#anchor3)  
-* [Heatmap_reversal](#anchor4)  
-* [Calling strategies](#anchor5)  
-* [Thresholding strategies](#anchor6)  
-* [Plotting strategies](#anchor7)  
-* [Plotting thresholded strategies](#anchor8)  
-* [Saving the results](#anchor9)  
-* [Plotting with ggplot2](#anchor10) 
-* [Graphs Gallery](#anchor11)
-* [Path Length Graphs](#anchor12)
-* [Latency Graphs](#anchor13)
+* [Heatmap_reversal](#anchor4)
+* [Strategies]()
+  * [Calling strategies](#anchor5)  
+  * [Thresholding strategies](#anchor6)  
+  * [Plotting strategies](#anchor7)  
+  * [Plotting thresholded strategies](#anchor8)  
+  * [Saving the results](#anchor9)  
+* [OLD Graphs](#anchor11)
+  * [Plotting with ggplot2](#anchor10) 
+  * [Path Length Graphs](#anchor12)
+  * [Latency Graphs](#anchor13)
 * [UPDATED Graphs](#anchor14)
   * [Heatmaps](#anchor14)
   * [Path length Graphs](#anchor15)
@@ -65,6 +66,16 @@ opts_knit$set(width=75)
 * [Layout Test](#anchor22)
   * [Probe Trial Mean Distance old goal](#anchor23)  
 * [Arena Quadrant Problem](#anchor24)
+* [t-Tests](#anchor25)
+  * [time in old goal zone of probe trials](#anchor26)
+  * [time in old goal zone of probe trials](#anchor27)
+  * [Path length of all trials](#anchor28)
+  * [Latency to goal of all trials](#anchor29)
+* [Logistic regression](#anchor30)
+  * [Age group 17-25 Strain](#anchor31)
+  * [Age group 13-14 Strain*Housing](#anchor32)
+  * [Age group 3 Strain*Housing](#anchor33)
+
 
 *** 
 
@@ -76,7 +87,6 @@ experiment = Rtrack::read_experiment("Experiment_description2.xlsx", format = "E
 parallel::stopCluster(cluster)
 ```
 ***  
-
 ## Analysis of experiment metrics{#anchor2}
 
 These metrics can be compared and extracted from the pure track files.
@@ -118,7 +128,8 @@ Rtrack::plot_density(APP.metrics, title = "APPswe Heatmap",
                      col = colorRampPalette(c("#000C9E", "#00FEF6", "#FE009E"))(100))
 Rtrack::plot_density(PS1.metrics, title = "PS1dE9 Heatmap",
                      col = colorRampPalette(c("#000C9E", "#00FEF6", "#FE009E"))(100))
-```
+```  
+
 [back to top](#anchor99)
 
 ***  
@@ -142,10 +153,14 @@ Rtrack::plot_density(APPr.metrics, title = "APPswe_reversal Heatmap",
                      col = colorRampPalette(c("#000C9E", "#00FEF6", "#FE009E"))(100))
 Rtrack::plot_density(PS1r.metrics, title = "PS1dE9_reversal Heatmap",
                      col = colorRampPalette(c("#000C9E", "#00FEF6", "#FE009E"))(100))
-```
+```  
+
 [back to top](#anchor99)  
   
 ***  
+  
+  
+# Strategies {#anchor5}
 
 ## Calling strategies {#anchor5}
 ```{r}
@@ -159,7 +174,8 @@ limits called strategies to those, where confidence is greater than 40%
 
 ```{r}
 dim(Rtrack::threshold_strategies(strategies, 0.4)$calls)
-```
+```  
+
 [back to top](#anchor99)  
 
 ***  
@@ -179,7 +195,8 @@ Rtrack::plot_strategies(strategies, experiment = experiment, factor = "Strain",
 par(mfrow = c(2, 2))
 Rtrack::plot_strategies(Rtrack::threshold_strategies(strategies, 0.4), experiment = experiment,
                         factor = "Strain", exclude.probe = TRUE)
-```
+```  
+
 [back to top](#anchor99)
   
 ***  
@@ -190,10 +207,13 @@ Here we export the results of the analyzed Track Files into a data.frame, to ana
 ```{r}
 results = Rtrack::export_results(experiment)
 datatable(results, rownames = FALSE, filter="top", options = list(pageLength = 5, scrollX=T) )
-```
+```  
+
 [back to top](#anchor99)
   
 ***  
+  
+# OLD Graphs {#anchor11}
 
 ## Plotting with ggplot2 {#anchor10}  
 ```{r warning=FALSE}
@@ -203,10 +223,11 @@ Results=read_excel("Results3.xlsx", col_types=c("text","text","text","text","tex
 ggplot(Results, aes(x=`_Day`,y=path.length,color=factor(Strain)))+geom_jitter()
 Results
 
-```
+```  
+
 [back to top](#anchor99)  
 
-## CAREFUL!!! The graphs below still include the probe trials (day 7 trial 1). To remove them add:   Probe=='FALSE' to filter{#anchor11}   
+CAREFUL!!! The graphs below still include the probe trials (day 7 trial 1). To remove them add:   Probe=='FALSE' to filter  
 
 ***  
 
@@ -333,7 +354,9 @@ ggplot(aes(x=`_Day`,y=latency.to.goal, fill=Age_group))+geom_boxplot()+
   
 ***   
 
-## UPDATED Heatmap_probe {#anchor14}
+# UPDATED Graphs {#anchor14}  
+
+## Heatmap_probe
 ```{r filtering for heatmaps, include=FALSE}
 #############Probe_Trials##################
 wtp.metrics = experiment$metrics[experiment$factors$Strain == "WT" &
@@ -524,7 +547,7 @@ Rtrack::plot_density(PS1penr25.metrics, title = "PS1dE9 Probe Heatmap ENR 17-25m
   
 ***  
 
-## UPDATED Path Length Graphs {#anchor15}
+## Path Length Graphs {#anchor15}
 ```{r path length updated}
 
 mo3=filter(Results, Age_group=='3')
@@ -560,7 +583,7 @@ Points -> outlier
   
 ***  
 
-## UPDATED Velocity (Mean) Graphs {#anchor16}
+## Velocity (Mean) Graphs {#anchor16}
 ```{r velocity updated}
 
 mo3=filter(Results, Age_group=='3')
@@ -590,7 +613,7 @@ ggplot(aes(x=`_Day`,y=mean.velocity, fill=Condition))+geom_boxplot()+
   
 ***  
 
-## UPDATED Strategy (Thresholded) Graphs {#anchor17}  
+## Strategy (Thresholded) Graphs {#anchor17}  
 ```{r}
 par(mfrow = c(2, 2))
 Rtrack::plot_strategies(Rtrack::threshold_strategies(strategies, 0.4), experiment = experiment,
@@ -601,6 +624,8 @@ Rtrack::plot_strategies(Rtrack::threshold_strategies(strategies, 0.4), experimen
 
   
 ***  
+
+# Probe Trial Graphs {#anchor18}  
 
 ## Probe Trial Number of Goals Crossings {#anchor18}
 ```{r Number of Goal Crossings}
@@ -712,43 +737,11 @@ mo25.probe  %>%
   
 [back to top](#anchor99)  
   
-# Testing Layout Options {.tabset .tabset-fade .tabset-pills #anchor22} 
+## Probe Trial Mean Distance old goal {.tabset .tabset-fade .tabset-pills #anchor23}  
   
 ***  
 
-## 3 Months  
-```{r}
-mo3.probe %>%
-  ggplot(aes(x=`Strain`,y=`mean.initial.heading.error`, fill=Housing))+geom_boxplot()+
-    labs(x="Condition",
-       y="Initial heading error in %??",
-       title="Probe Trial Mean Initial heading error 3mo mice")+scale_fill_manual(values = c("ENR"="#b3669e","STD"="#98984d"))
-```
-  
-## 13-14 Months  
-```{r}
-mo14.probe  %>%
-  ggplot(aes(x=`Strain`,y=`mean.initial.heading.error`, fill=Housing))+geom_boxplot()+
-    labs(x="Condition",
-       y="Initial heading error in %??",
-       title="Probe Trial Mean Initial heading error 13-14mo mice")+scale_fill_manual(values = c("ENR"="#b3669e","STD"="#98984d"))
-```
-  
-## 17-25 Months
-```{r}
-mo25.probe  %>%
-  ggplot(aes(x=`Strain`,y=`mean.initial.heading.error`, fill=Housing))+geom_boxplot()+
-    labs(x="Condition",
-       y="Initial heading error in ???",
-       title="Probe Trial Mean Initial heading error 17-25mo mice")+scale_fill_manual(values = c("ENR"="#b3669e","STD"="#98984d"))
-```
-[back to top](#anchor99) 
-
-# Probe Trial Mean Distance old goal {.tabset .tabset-fade .tabset-pills #anchor23}  
-  
-***  
-  
-## 3 Months  
+### 3 Months  
 ```{r mean dist old goal 3months}
 mo3.probe %>%
   ggplot(aes(x=`Strain`,y=`mean.d.old.goal`, fill=Housing))+geom_boxplot()+
@@ -756,8 +749,8 @@ mo3.probe %>%
        y="Distance",
        title="Probe Trial Mean Distance old goal 3mo mice")+scale_fill_manual(values = c("ENR"="#b3669e","STD"="#98984d"))
 ```
-    
-## 13-14 Months  
+
+### 13-14 Months  
 ```{r}
 mo14.probe  %>%
   ggplot(aes(x=`Strain`,y=`mean.d.old.goal`, fill=Housing))+geom_boxplot()+
@@ -765,16 +758,16 @@ mo14.probe  %>%
        y="Distance",
        title="Probe Trial Mean Distance old goal 13-14mo mice")+scale_fill_manual(values = c("ENR"="#b3669e","STD"="#98984d"))
 ```
-    
-## 17-25 Months
+
+### 17-25 Months
 ```{r}
 mo25.probe  %>%
   ggplot(aes(x=`Strain`,y=`mean.d.old.goal`, fill=Housing))+geom_boxplot()+
     labs(x="Condition",
        y="Distance",
        title="Probe Trial Mean Distance old goal 17-25mo mice")+scale_fill_manual(values = c("ENR"="#b3669e","STD"="#98984d"))
-```
-  
+```  
+
 # Arena Quadrant Problem {#anchor24}
 
 ***  
@@ -795,7 +788,9 @@ knitr::include_graphics("Watermaze_Quadrant.png")
 ```
 
 
-## t-Tests (time in old goal zone of probe trials) between Age Groups {.tabset .tabset-fade .tabset-pills #anchor25}
+# t-Tests {#anchor25}
+
+## t-Tests (time in old goal zone of probe trials) between Age Groups {.tabset .tabset-fade .tabset-pills #anchor26}
   
 ***  
 
@@ -819,7 +814,7 @@ no significance between the overall groups
 
 <br>  
 
-## t-Tests (time in old goal zone of probe trials) between Strains & Housings of Age Group 17-25 {.tabset .tabset-fade .tabset-pills #anchor26}
+## t-Tests (time in old goal zone of probe trials) between Strains & Housings of Age Group 17-25 {.tabset .tabset-fade .tabset-pills #anchor27}
   
 ***  
 
@@ -847,7 +842,7 @@ no significance found
 
 <br>  
 
-## t-Tests (Path length of all trials) between Strains {.tabset .tabset-fade .tabset-pills #anchor27}
+## t-Tests (Path length of all trials) between Strains {.tabset .tabset-fade .tabset-pills #anchor28}
   
 ***  
 
@@ -887,3 +882,247 @@ mo25.dTg=filter(mo25, Strain=="dTg")
 mo25.AP=filter(mo25, Strain=="APPswe")
 t.test(mo25.dTg$path.length,mo25.AP$path.length)
 ```
+
+## t-Tests (Latency to goal of all trials) between Strains {.tabset .tabset-fade .tabset-pills #anchor29}
+  
+***  
+
+### 17-25 WT/dTg
+```{r}
+mo25.WT=filter(mo25, Strain=="WT")
+mo25.dTg=filter(mo25, Strain=="dTg")
+t.test(mo25.WT$latency.to.goal,mo25.dTg$latency.to.goal)
+```  
+### 17-25 WT/PS1dE9
+```{r}
+mo25.WT=filter(mo25, Strain=="WT")
+mo25.PS=filter(mo25, Strain=="PS1dE9")
+t.test(mo25.WT$latency.to.goal,mo25.PS$latency.to.goal)
+```  
+### 17-25 WT/APPswe
+```{r}
+mo25.WT=filter(mo25, Strain=="WT")
+mo25.AP=filter(mo25, Strain=="APPswe")
+t.test(mo25.WT$latency.to.goal,mo25.AP$latency.to.goal)
+```
+### 17-25 PS1dE9/APPswe
+```{r}
+mo25.PS=filter(mo25, Strain=="PS1dE9")
+mo25.AP=filter(mo25, Strain=="APPswe")
+t.test(mo25.PS$latency.to.goal,mo25.AP$latency.to.goal)
+```  
+### 17-25 dTg/PS1dE9
+```{r}
+mo25.dTg=filter(mo25, Strain=="dTg")
+mo25.AP=filter(mo25, Strain=="PS1dE9")
+t.test(mo25.dTg$latency.to.goal,mo25.PS$latency.to.goal)
+```  
+### 17-25 dTg/APPswe
+```{r}
+mo25.dTg=filter(mo25, Strain=="dTg")
+mo25.AP=filter(mo25, Strain=="APPswe")
+t.test(mo25.dTg$latency.to.goal,mo25.AP$latency.to.goal)
+```  
+
+# Logistic regression {#anchor30}  
+  
+Results table can be seen [here](https://docs.google.com/spreadsheets/d/1l4cZd7b-e-g4R9bCtmnzOb2TT8EPAE8E/edit#gid=952962709)
+
+## Strategy Legend  
+
+* 1 - thigmotaxis  
+* 2 - circling  
+* 3 - random path  
+* 4 - scanning  
+* 5 - chaining  
+* 6 - directed search  
+* 7 - corrected search  
+* 8 - direct path  
+* 9 - perseverance  
+
+***
+  
+Strategies 1-5 are less hippocampus-dependent, 'unspatial' and therefore get strategy.class = 0. 
+In contrast to that, strategies 6-9 are more hippocampus-dependent, 'spatial' and get strategy.class = 1 assigned.  
+
+All probabilities in the following codes relate to choosing strategy.class = 1.
+
+***
+```{r data import}
+setwd("C:/Google/Uni/Bachelorarbeit/R/Analysis")
+logistic.data=read_excel("logistic.reg.xlsx")
+```
+
+## Age Group 17-25 Housing  {#anchor31 }
+
+***  
+
+```{r}
+logistic.data.1725=filter(logistic.data, Age_group1725=='1')
+```
+fitting different logistic regression models with increasing complexity  
+simple model including housing only
+```{r}
+logreg.1725.add.1a <- glm(strategy.class ~ Housing, family = binomial, data = logistic.data.1725)
+```  
+simple model including Strain only
+```{r}
+logreg.1725.add.1b <- glm(strategy.class ~ Strain, family = binomial, data = logistic.data.1725)
+```  
+additive model including all factors
+```{r}
+logreg.1725.add.2 <- glm(strategy.class ~ Housing + Strain, family = binomial, data = logistic.data.1725)
+```  
+interaction model including all factors
+```{r}
+logreg.1725.int <- glm(strategy.class ~ Housing * Strain, family = binomial, data = logistic.data.1725)
+```
+Model comparisons using the anova function
+```{r}
+anova(logreg.1725.add.1b, logreg.1725.add.1a, test="Chisq")
+```
+model including Strain better than model including housing
+```{r}
+anova(logreg.1725.add.2, logreg.1725.add.1b, test="Chisq")
+```
+adding factor housing does not improve the model
+```{r}
+anova(logreg.1725.int, logreg.1725.add.1b, test="Chisq")
+```
+interaction model not better than additive model
+simple model including Strain only is the minimal adequate model
+
+summary of minimal adequate model
+```{r}
+summary(logreg.1725.add.1b)
+exp(coef(logreg.1725.add.1b))
+```
+impact of predictor "Strain"
+```{r}
+pred.data <- data.frame(Strain=c("WT", "dTg", "PS1dE9", "APPswe"))
+pred.data$prob <- predict(logreg.1725.add.1b, newdata = pred.data, type = "response")
+pred.data
+```
+impact of predictor "housing"
+```{r}
+pred.data2 <- data.frame(Housing=c("STD","ENR"))
+pred.data2$prob <- predict(logreg.1725.add.1a, newdata = pred.data2, type = "response")
+pred.data2
+```  
+
+## Age group 13-14 Strain x Housing effects {#anchor32}
+  
+***  
+
+```{r}
+logistic.data.1314=filter(logistic.data, Age_group1314=='1')
+```
+fitting different logistic regression models with increasing complexity
+simple model including housing only
+```{r}
+logreg.1314.add.1a <- glm(strategy.class ~ Housing, family = binomial, data = logistic.data.1314)
+```
+simple model including Strain only
+```{r}
+logreg.1314.add.1b <- glm(strategy.class ~ Strain, family = binomial, data = logistic.data.1314)
+```
+additive model including all factors
+```{r}
+logreg.1314.add.2 <- glm(strategy.class ~ Housing + Strain, family = binomial, data = logistic.data.1314)
+```
+interaction model including all factors
+```{r}
+logreg.1314.int <- glm(strategy.class ~ Housing * Strain, family = binomial, data = logistic.data.1314)
+```
+
+model comparisons using the anova function
+```{r}
+anova(logreg.1314.add.1b, logreg.1314.add.1a, test="Chisq")
+```
+no Df, same model fit?
+```{r}
+anova(logreg.1314.add.2, logreg.1314.add.1b, test="Chisq")
+```
+additive model shows significantly better fit (Pr=0.01295)
+```{r}
+anova(logreg.1314.int, logreg.1314.add.1b, test="Chisq")
+```
+interaction model better than simple Strain model (Pr=0.00248)
+interaction model including Strain*Housing is the best fitting model
+
+summary of minimal adequate model
+```{r}
+summary(logreg.1314.int)
+exp(coef(logreg.1314.int))
+```
+impact of predictor "Strain*Housing"
+```{r}
+pred.data <- data.frame(Strain=c("WT", "WT","dTg","dTg"),Housing=c("STD","ENR","STD","ENR"))
+pred.data$prob <- predict(logreg.1314.int, newdata = pred.data, type = "response")
+pred.data
+```  
+
+## Age group 3 Strain x Housing {#anchor33}
+  
+***  
+
+
+```{r}
+logistic.data.3=filter(logistic.data, Age_group3=='1')
+```
+fitting different logistic regression models with increasing complexity
+simple model including housing only
+```{r}
+logreg.3.add.1a <- glm(strategy.class ~ Housing, family = binomial, data = logistic.data.3)
+```
+simple model including Strain only
+```{r}
+logreg.3.add.1b <- glm(strategy.class ~ Strain, family = binomial, data = logistic.data.3)
+```
+additive model including all factors
+```{r}
+logreg.3.add.2 <- glm(strategy.class ~ Housing + Strain, family = binomial, data = logistic.data.3)
+```
+interaction model including all factors
+```{r}
+logreg.3.int <- glm(strategy.class ~ Housing * Strain, family = binomial, data = logistic.data.3)
+```
+comparisons between model using the anova function
+```{r}
+anova(logreg.3.add.1b, logreg.3.add.1a, test="Chisq")
+```
+model with Strain only is really good (Pr=3.245e-13)
+```{r}
+anova(logreg.3.add.2, logreg.3.add.1b, test="Chisq")
+```
+adding factor housing also has good fit  (Pr=1.945e-5)
+```{r}
+anova(logreg.3.int, logreg.3.add.1b, test="Chisq")
+```
+interaction model better than additive model (Pr=5.648e-6)
+interaction model is the best
+
+summary of Strain only model
+```{r}
+summary(logreg.3.add.1b)
+exp(coef(logreg.3.add.1b))  
+```
+summary of interaction model
+```{r}
+summary(logreg.3.int)
+exp(coef(logreg.3.int))
+```
+impact of predictor "Strain"
+```{r}
+pred.data3 <- data.frame(Strain=c("WT", "dTg", "PS1dE9", "APPswe"))
+pred.data3$prob <- predict(logreg.3.add.1b, newdata = pred.data3, type = "response")
+pred.data3
+```
+impact of predictors "Strain x Housing"
+```{r}
+pred.data3x <- data.frame(Strain=c("WT","WT", "dTg","dTg", "PS1dE9","PS1dE9", "APPswe","APPswe"),Housing=c("STD","ENR","STD","ENR","STD","ENR","STD","ENR"))
+pred.data3x$prob <- predict(logreg.3.int, newdata = pred.data3x, type = "response")
+pred.data3x
+```
+
+The full overview of the [logistic regression results table](https://docs.google.com/spreadsheets/d/1l4cZd7b-e-g4R9bCtmnzOb2TT8EPAE8E/edit#gid=952962709) is here.
