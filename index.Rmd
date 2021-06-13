@@ -1456,7 +1456,7 @@ Results table can be seen [here](https://docs.google.com/spreadsheets/d/1l4cZd7b
 knitr::include_graphics("strategy.png")
 ```  
   
-# Visualization results log. reg {#anchor40} 
+# Visualization results log. reg {#anchor41} 
 ```{r}
 library(plotly)
 setwd("C:/Google/Uni/Bachelorarbeit/R/Analysis")
