@@ -5,6 +5,8 @@ date: "`r Sys.Date()`"
 output:
   rmdformats::downcute:
     self_contained: true
+bibliography: Bachelor Thesis.bib
+csl: elsevier-harvard.csl
 ---
 
 
@@ -24,6 +26,7 @@ library(ggsci)
 library(tidyverse)
 library(ggh4x)
 library(rmdformats)
+library(plotly)
 
 ## Global options
 options(max.print="75")
@@ -34,6 +37,7 @@ opts_chunk$set(echo=TRUE,
                message=FALSE,
                warning=FALSE)
 opts_knit$set(width=75)
+write_bib(file = "r-packages.bib")
 ```
 
 ***
@@ -1452,13 +1456,12 @@ Results table can be seen [here](https://docs.google.com/spreadsheets/d/1l4cZd7b
 
 # Strategy Overview plot {#anchor40} 
 
-```{r}
+```{r fig.align = "center",out.width="200%"}
 knitr::include_graphics("strategy.png")
 ```  
   
 # Visualization results log. reg {#anchor41} 
 ```{r}
-library(plotly)
 setwd("C:/Google/Uni/Bachelorarbeit/R/Analysis")
 gg = ggplot(pred.data3x, aes(x=Strain, y=prob, color=Housing)) + 
   geom_jitter() + 
@@ -1485,5 +1488,11 @@ ebene= ebene %>% add_surface(z=~z2)
 ebene= ebene %>% layout( title='Probability of Strategy class 1 in 3 months old mice')
 ebene
 ```
-Interactive plot created with `plotly` library. 
 
+Interactive plot created with `plotly`[@sievert_plotly_2021] library. 
+
+testing citations[@garthe_mice_2016] 
+
+RTrack package used[@overall_rtrack_2020]
+
+# References
