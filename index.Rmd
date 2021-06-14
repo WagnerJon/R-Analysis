@@ -1076,9 +1076,10 @@ exp(coef(logreg.1314.int))
 ```
 impact of predictor "Strain*Housing"
 ```{r}
-pred.data <- data.frame(Strain=c("WT", "WT","dTg","dTg"),Housing=c("STD","ENR","STD","ENR"))
-pred.data$prob <- predict(logreg.1314.int, newdata = pred.data, type = "response")
-pred.data
+pred.data1314 <- data.frame(Strain=c("WT", "WT","dTg","dTg"),Housing=c("STD","ENR","STD","ENR"))
+pred.data1314$prob <- predict(logreg.1314.int, newdata = pred.data1314, type = "response")
+pred.data1314
+
 ```  
 
 ## Age group 3 Strain x Housing {#anchor33}
@@ -1194,6 +1195,12 @@ pred.data.17.acq <- data.frame(Strain=c("WT", "dTg", "PS1dE9", "APPswe"))
 pred.data.17.acq$prob <- predict(logreg.1725.acq.add.1b, newdata = pred.data.17.acq, type = "response")
 pred.data.17.acq
 ```
+impact of predictor "Housing"
+```{r}
+pred.data.17.acq <- data.frame(Housing=c("STD","ENR"))
+pred.data.17.acq$prob <- predict(logreg.1725.acq.add.1a, newdata = pred.data.17.acq, type = "response")
+pred.data.17.acq
+```
 
 ## Age group 17-25 reversal Strain  {#anchor35 }
 
@@ -1294,7 +1301,7 @@ exp(coef(logreg.1314.acq.int))
 impact of predictors "Strain x Housing"
 ```{r}
 pred.data1314.acq <- data.frame(Strain=c("WT","WT", "dTg","dTg"),Housing=c("STD","ENR","STD","ENR"))
-pred.data1314.acq$prob <- predict(logreg.1314.acq.int, newdata = pred.data1314.acq, type = "response")
+pred.data1314.acq$prob <- predict(logreg.1314.acq.add.2, newdata = pred.data1314.acq, type = "response")
 pred.data1314.acq
 ```  
 
@@ -1471,7 +1478,7 @@ knitr::include_graphics("strategy.png")
 ## 2D - Age group 3 {#anchor41.1}
 ```{r}
 setwd("C:/Google/Uni/Bachelorarbeit/R/Analysis")
-probs=read_excel("results_logistic.xlsx")
+probs=read_excel("results_logistic_new.xlsx")
 probs$`Experiment_Phase`=as.factor(probs$`Experiment_Phase`)
 probs3=filter(probs, Age_group=='3' & Model=='STRAIN*HOUSING')
 
@@ -1483,13 +1490,12 @@ Strain*Housing interaction model used for predictions.
 
 ## 2D - Age group 13-14 {#anchor41.2}
 ```{r}
-probs13=filter(probs, Age_group=='13-14' & Model=='STRAIN*HOUSING')
+probs13=filter(probs, Age_group=='13-14')
 
 gg = ggplot(probs13, mapping=aes(x=Strain, y=Probability, color=Housing)) + geom_jitter() + facet_grid(~Experiment_Phase) + labs(x="Strain", y="P(strategy.class 1)", title="Probability of 13-14 months old mice using Strategy class 1")
 ggplotly(gg, height=400, width=800)
 ```  
-For Aquisition phase additive model is the best. Should it be used?
-Strain*Housing interaction model used for predictions.  
+Strain*Housing interaction model used for predictions of REV and BOTH phases. In the ACQ experiment phase, the additive model (Strain+Housing) shows the best fit. [Take a look here]{#anchor36} 
 
 ## 2D - Age group 17-25 {#anchor41.3}
 ```{r}
