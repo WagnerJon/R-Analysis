@@ -1511,19 +1511,19 @@ Strategy.class ~ Strain and Strategy.class ~ Housing models were used separately
 x=c("WT","dTg","PS1dE9","APPswe")
 y=c("STD","ENR","ACQ STD","ACQ ENR", "REV STD", "REV ENR")
 z=rbind(
-  c(0.1061947,-0.05573,0.0375,-0.1498423),
-  c(-0.1507937,0.0186289,0.1675978,-0.1517572),
-  c(0.1498674,0.1509217,0.0564133,0.1590389),
-  c(-0.0239207,0.0772358,0.1177536,0.137224),
-  c(-0.0544041,0.0931034,0.0140845,-0.0099778),
-  c(0.0010616,0.2090069,0.1390805,-0.2368421)
+  c(0.1590389,-0.0544041,0.0931034,0.0140845),
+  c(0.137224,0.0010616,0.2090069,0.1390805),
+  c(0.1245211,-0.2324561,0.0328185,-0.0731225),
+  c(0.0526316,-0.0907473,0.1307692,0.0747126),
+  c(0.2102273,0.2025316,0.1818182,0.1416185),
+  c(0.2637795,0.1368421,0.3265896,0.2356322)
 )
 z2=rbind(
   c(0,0,0,0),c(0,0,0,0),c(0,0,0,0),c(0,0,0,0),c(0,0,0,0),c(0,0,0,0))
   
 ebene= plot_ly(type="surface", x=~x, y=~y, z=~z)
 ebene= ebene %>% add_surface(z=~z2)
-ebene= ebene %>% layout( title='Probability of Strategy class 1 in 3 months old mice')
+ebene= ebene %>% layout( title='Probability of Strategy class 1 in 3 months old mice compared to p=0.5')
 ebene
 ```
 
