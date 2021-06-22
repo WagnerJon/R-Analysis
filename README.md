@@ -10,3 +10,6 @@ In my R-Analysis notebook I additionally explored the possibilites of [`ggplot2`
 
 The most important metrics we wanted to extract from the raw data were the strategy usages and how they differ between Strains, Age groups, Housing and all combinations of those. Therefore we once again used [`RTrack`](https://rupertoverall.net/Rtrack/) to predict the strategies used by the mice for each Trial.  For each Trial we computed one of these tables, where the called strategy plus the confidence for all strategies are shown.   
 ![Strategy Table](https://raw.githubusercontent.com/WagnerJon/R-Analysis/main/Strategy_table.png)
+
+We then assigned each track the strategy class 0 or 1 depending on their hippocampus-dependency. The assignment was done following figure 3 in *Garthe et. al. 2016*
+![Strategy.class](https://raw.githubusercontent.com/WagnerJon/R-Analysis/main/strategy.class.png)
