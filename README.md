@@ -18,6 +18,8 @@ We then assigned each track the strategy class 0 or 1 depending on their hippoca
 We´ve then done a logistic regression, which is a statistical model for a regression analysis. To do this, we first applied different logistic regression models with increasing complexity to our data and compared them using the ANOVA function. With this we choose the minimal adequate model, which is the simplest model, that describes the data appropiatly. With this model, we then could compute a prediction, which is the propability of a mouse of a specific experiment paradigm, choosing strategy class 1 and therefore using a hippocampus dependent strategy. 
 
 As the machine-learning algorithm of [`RTrack`](https://rupertoverall.net/Rtrack/) always chooses a strategy for a Trial, even if the algorithm is not quite sure, there are a lot of strategy calls, that the algorithm does not have a high confidence in. It therefore is of interest to only choose and only work with data, where a certain confidence threshold is given. 
-> We have observed during testing that confidence scores above 0.4 are typically accurate and reproducible
-> RTrack - Documentation
+> We have observed during testing that confidence scores above 0.4 are typically accurate and reproducible  
+> 
+> RTrack - Documentation  
+
 Following the recomendation of the [`RTrack`](https://rupertoverall.net/Rtrack/) documentation, a confidence threshold of 0.4 was choosen, which means that all strategies that did not were called with a confidence of 0.4 or higher, were discarded. 
