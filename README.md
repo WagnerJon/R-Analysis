@@ -19,7 +19,6 @@ We´ve then done a logistic regression, which is a statistical model for a regre
 
 As the machine-learning algorithm of [`RTrack`](https://rupertoverall.net/Rtrack/) always chooses a strategy for a Trial, even if the algorithm is not quite sure, there are a lot of strategy calls, that the algorithm does not have a high confidence in. It therefore is of interest to only choose and only work with data, where a certain confidence threshold is given. 
 > We have observed during testing that confidence scores above 0.4 are typically accurate and reproducible  
-> 
 > RTrack - Documentation  
 
 Following the recomendation of the [`RTrack`](https://rupertoverall.net/Rtrack/) documentation, a confidence threshold of 0.4 was choosen, which means that all strategies that did not were called with a confidence of 0.4 or higher, were discarded. 
