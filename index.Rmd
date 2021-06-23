@@ -55,11 +55,11 @@ write_bib(file = "r-packages.bib")
   * [Plotting strategies](#anchor7)  
   * [Plotting thresholded strategies](#anchor8)  
   * [Saving the results](#anchor9)  
-* [OLD Graphs](#anchor11)
+* [**OLD** Graphs](#anchor11)
   * [Plotting with ggplot2](#anchor10) 
   * [Path Length Graphs](#anchor12)
   * [Latency Graphs](#anchor13)
-* [UPDATED Graphs](#anchor14)
+* [**UPDATED** Graphs](#anchor14)
   * [Heatmaps](#anchor14)
   * [Path length Graphs](#anchor15)
   * [Mean Velocity Graphs](#anchor16)
@@ -93,6 +93,20 @@ write_bib(file = "r-packages.bib")
   * [2D - Age group 13-14 months](#anchor41.2)
   * [2D - Age group 17-25 months](#anchor41.3)
   * [3D - Surface Plot 3 months](#anchor41.4)
+* [**Thresholded** Logistic regression](#anchor42)
+  * [17-25 Strain](#anchor43)
+  * [13-14 Strain*Housing](#anchor44)
+  * [3 Strain*Housing](#anchor45)
+  * [17-25 acquisition Strain](#anchor46)
+  * [17-25 reversal Strain*Housing](#anchor47)
+  * [13-14 acquisition Strain*Housing](#anchor48)
+  * [13-14 reversal Strain*Housing](#anchor49)
+  * [3 acquisition Strain*Housing](#anchor50)
+  * [3 reversal Strain*Housing](#anchor51)
+* [**Thresholded** Visualization results log.reg](#anchor52)
+  * [2D - Age group 3 months](#anchor52.1)
+  * [2D - Age group 13-14 months](#anchor52.2)
+  * [2D - Age group 17-25 months](#anchor52.3)
 * [References](#ref)
  
 
@@ -232,7 +246,7 @@ datatable(results, rownames = FALSE, filter="top", options = list(pageLength = 5
   
 ***  
   
-# OLD Graphs {#anchor11}
+# **OLD** Graphs {#anchor11}
 
 ## Plotting with ggplot2 {#anchor10}  
 ```{r warning=FALSE}
@@ -373,7 +387,7 @@ ggplot(aes(x=`_Day`,y=latency.to.goal, fill=Age_group))+geom_boxplot()+
   
 ***   
 
-# UPDATED Graphs {#anchor14}  
+# **UPDATED** Graphs {#anchor14}  
 
 ## Heatmap_probe
 ```{r filtering for heatmaps, include=FALSE}
@@ -715,12 +729,12 @@ mo3.probe %>%
        y="Time in s",
        title="Probe Trial Time spent in old goal 3mo mice")+scale_fill_manual(values = c("ENR"="#b3669e","STD"="#98984d"))
 mo14.probe  %>%
-  ggplot(aes(x=`Strain`,y=old.goal.crossings, fill=Housing))+geom_boxplot()+
+  ggplot(aes(x=`Strain`,y=time.in.zone.old.goal, fill=Housing))+geom_boxplot()+
     labs(x="Condition",
        y="Time in s",
        title="Probe Trial Time spent in old goal 13-14mo mice")+scale_fill_manual(values = c("ENR"="#b3669e","STD"="#98984d"))
 mo25.probe  %>%
-  ggplot(aes(x=`Strain`,y=old.goal.crossings, fill=Housing))+geom_boxplot()+
+  ggplot(aes(x=`Strain`,y=time.in.zone.old.goal, fill=Housing))+geom_boxplot()+
     labs(x="Condition",
        y="Time in s",
        title="Probe Trial Time spent in old goal 17-25mo mice")+scale_fill_manual(values = c("ENR"="#b3669e","STD"="#98984d"))
@@ -1531,6 +1545,570 @@ Interactive plot created with `plotly`[@sievert_plotly_2021] library.
 
 testing citations[@garthe_mice_2016] 
 
-RTrack package used[@overall_rtrack_2020]
+RTrack package used[@overall_rtrack_2020]  
 
+# **Thresholded** Logistic regression  {#anchor42}  
+  
+
+## Strategy Legend  
+
+* 1 - thigmotaxis  
+* 2 - circling  
+* 3 - random path  
+* 4 - scanning  
+* 5 - chaining  
+* 6 - directed search  
+* 7 - corrected search  
+* 8 - direct path  
+* 9 - perseverance  
+
+***
+  
+Strategies 1-5 are less hippocampus-dependent, 'unspatial' and therefore get strategy.class = 0. 
+In contrast to that, strategies 6-9 are more hippocampus-dependent, 'spatial' and get strategy.class = 1 assigned.  
+
+All probabilities in the following codes relate to choosing strategy.class = 1.
+
+***
+```{r data import thresh}
+setwd("C:/Google/Uni/Bachelorarbeit/R/Analysis")
+ogistic.data=read_excel("logistic_reg_thresh.xlsx")
+```
+
+## Age group 17-25 Housing  {#anchor43 }
+
+***  
+
+```{r}
+ogistic.data.1725=filter(ogistic.data, Age_group1725=='1')
+```
+fitting different logistic regression models with increasing complexity  
+simple model including housing only
+```{r}
+ogreg.1725.add.1a <- glm(strategy.class ~ Housing, family = binomial, data = ogistic.data.1725)
+```  
+simple model including Strain only
+```{r}
+ogreg.1725.add.1b <- glm(strategy.class ~ Strain, family = binomial, data = ogistic.data.1725)
+```  
+additive model including all factors
+```{r}
+ogreg.1725.add.2 <- glm(strategy.class ~ Housing + Strain, family = binomial, data = ogistic.data.1725)
+```  
+interaction model including all factors
+```{r}
+ogreg.1725.int <- glm(strategy.class ~ Housing * Strain, family = binomial, data = ogistic.data.1725)
+```
+Model comparisons using the anova function
+```{r}
+anova(ogreg.1725.add.1b, ogreg.1725.add.1a, test="Chisq")
+```
+model including Strain better than model including housing
+```{r}
+anova(ogreg.1725.add.2, ogreg.1725.add.1b, test="Chisq")
+```
+adding factor housing does not improve the model
+```{r}
+anova(ogreg.1725.int, ogreg.1725.add.1b, test="Chisq")
+```
+interaction model not better than additive model
+simple model including Strain only is the minimal adequate model
+
+summary of minimal adequate model
+```{r}
+summary(ogreg.1725.add.1b)
+exp(coef(ogreg.1725.add.1b))
+```
+impact of predictor "Strain"
+```{r}
+pre.data <- data.frame(Strain=c("WT", "dTg", "PS1dE9", "APPswe"))
+pre.data$prob <- predict(ogreg.1725.add.1b, newdata = pre.data, type = "response")
+pre.data
+```
+impact of predictor "housing"
+```{r}
+pre.data2 <- data.frame(Housing=c("STD","ENR"))
+pre.data2$prob <- predict(ogreg.1725.add.1a, newdata = pre.data2, type = "response")
+pre.data2
+```  
+
+## Age group 13-14 Strain x Housing effects {#anchor44}
+  
+***  
+
+```{r}
+ogistic.data.1314=filter(ogistic.data, Age_group1314=='1')
+```
+fitting different logistic regression models with increasing complexity
+simple model including housing only
+```{r}
+ogreg.1314.add.1a <- glm(strategy.class ~ Housing, family = binomial, data = ogistic.data.1314)
+```
+simple model including Strain only
+```{r}
+ogreg.1314.add.1b <- glm(strategy.class ~ Strain, family = binomial, data = ogistic.data.1314)
+```
+additive model including all factors
+```{r}
+ogreg.1314.add.2 <- glm(strategy.class ~ Housing + Strain, family = binomial, data = ogistic.data.1314)
+```
+interaction model including all factors
+```{r}
+ogreg.1314.int <- glm(strategy.class ~ Housing * Strain, family = binomial, data = ogistic.data.1314)
+```
+
+model comparisons using the anova function
+```{r}
+anova(ogreg.1314.add.1b, ogreg.1314.add.1a, test="Chisq")
+```
+no Df, same model fit?
+```{r}
+anova(ogreg.1314.add.2, ogreg.1314.add.1b, test="Chisq")
+```
+additive model shows significantly better fit (Pr=0.01295)
+```{r}
+anova(ogreg.1314.int, ogreg.1314.add.1b, test="Chisq")
+```
+interaction model better than simple Strain model (Pr=0.00248)
+interaction model including Strain*Housing is the best fitting model
+
+summary of minimal adequate model
+```{r}
+summary(ogreg.1314.int)
+exp(coef(ogreg.1314.int))
+```
+impact of predictor "Strain*Housing"
+```{r}
+pre.data1314 <- data.frame(Strain=c("WT", "WT","dTg","dTg"),Housing=c("STD","ENR","STD","ENR"))
+pre.data1314$prob <- predict(ogreg.1314.int, newdata = pre.data1314, type = "response")
+pre.data1314
+
+```  
+
+## Age group 3 Strain x Housing {#anchor45}
+  
+***  
+
+
+```{r}
+ogistic.data.3=filter(ogistic.data, Age_group3=='1')
+```
+fitting different logistic regression models with increasing complexity
+simple model including housing only
+```{r}
+ogreg.3.add.1a <- glm(strategy.class ~ Housing, family = binomial, data = ogistic.data.3)
+```
+simple model including Strain only
+```{r}
+ogreg.3.add.1b <- glm(strategy.class ~ Strain, family = binomial, data = ogistic.data.3)
+```
+additive model including all factors
+```{r}
+ogreg.3.add.2 <- glm(strategy.class ~ Housing + Strain, family = binomial, data = ogistic.data.3)
+```
+interaction model including all factors
+```{r}
+ogreg.3.int <- glm(strategy.class ~ Housing * Strain, family = binomial, data = ogistic.data.3)
+```
+comparisons between model using the anova function
+```{r}
+anova(ogreg.3.add.1b, ogreg.3.add.1a, test="Chisq")
+```
+model with Strain only is really good (Pr=3.245e-13)
+```{r}
+anova(ogreg.3.add.2, ogreg.3.add.1b, test="Chisq")
+```
+adding factor housing also has good fit  (Pr=1.945e-5)
+```{r}
+anova(ogreg.3.int, ogreg.3.add.1b, test="Chisq")
+```
+additive model better than interaction model (Pr=5.648e-6)
+additive model is the best
+
+summary of Strain only model
+```{r}
+summary(ogreg.3.add.1b)
+exp(coef(ogreg.3.add.1b))  
+```
+summary of additive model model
+```{r}
+summary(ogreg.3.int)
+exp(coef(ogreg.3.int))
+```
+impact of predictor "Strain"
+```{r}
+pre.data3 <- data.frame(Strain=c("WT", "dTg", "PS1dE9", "APPswe"))
+pre.data3$prob <- predict(ogreg.3.add.1b, newdata = pre.data3, type = "response")
+pre.data3
+```
+impact of predictors "Strain + Housing"
+```{r}
+pre.data3x <- data.frame(Strain=c("WT","WT", "dTg","dTg", "PS1dE9","PS1dE9", "APPswe","APPswe"),Housing=c("STD","ENR","STD","ENR","STD","ENR","STD","ENR"))
+pre.data3x$prob <- predict(ogreg.3.add.2, newdata = pre.data3x, type = "response")
+pre.data3x
+```
+
+The full overview of the [logistic regression results table](https://docs.google.com/spreadsheets/d/1l4cZd7b-e-g4R9bCtmnzOb2TT8EPAE8E/edit#gid=952962709) is here.
+
+## Age group 17-25 acquisition Strain  {#anchor46 }
+
+***  
+
+```{r}
+ogistic.data.1725.acq=filter(ogistic.data.1725, `_Day`=='1'|`_Day`=='2'|`_Day`=='3'|`_Day`=='4'|`_Day`=='5'|`_Day`=='6')
+```
+fitting different logistic regression models with increasing complexity  
+simple model including housing only
+```{r}
+ogreg.1725.acq.add.1a <- glm(strategy.class ~ Housing, family = binomial, data = ogistic.data.1725.acq)
+```  
+simple model including Strain only
+```{r}
+ogreg.1725.acq.add.1b <- glm(strategy.class ~ Strain, family = binomial, data = ogistic.data.1725.acq)
+```  
+additive model including all factors
+```{r}
+ogreg.1725.acq.add.2 <- glm(strategy.class ~ Housing + Strain, family = binomial, data = ogistic.data.1725.acq)
+```  
+interaction model including all factors
+```{r}
+ogreg.1725.acq.int <- glm(strategy.class ~ Housing * Strain, family = binomial, data = ogistic.data.1725.acq)
+```
+Model comparisons using the anova function
+```{r}
+anova(ogreg.1725.acq.add.1b, ogreg.1725.acq.add.1a, test="Chisq")
+```  
+model including Strain better than model including housing
+```{r}
+anova(ogreg.1725.acq.add.2, ogreg.1725.acq.add.1b, test="Chisq")
+```
+adding factor housing does not improve the model
+```{r}
+anova(ogreg.1725.acq.int, ogreg.1725.acq.add.1b, test="Chisq")
+```
+
+```{r}
+summary(ogreg.1725.acq.int)
+exp(coef(ogreg.1725.acq.int))
+```
+
+impact of predictor "Strain"
+```{r}
+pre.data.17.acq <- data.frame(Strain=c("WT", "dTg", "PS1dE9", "APPswe"))
+pre.data.17.acq$prob <- predict(ogreg.1725.acq.add.1b, newdata = pre.data.17.acq, type = "response")
+pre.data.17.acq
+```
+impact of predictor "Housing"
+```{r}
+pre.data.17.acq <- data.frame(Housing=c("STD","ENR"))
+pre.data.17.acq$prob <- predict(ogreg.1725.acq.add.1a, newdata = pre.data.17.acq, type = "response")
+pre.data.17.acq
+```
+
+## Age group 17-25 reversal Strain  {#anchor47 }
+
+***  
+
+```{r}
+ogistic.data.1725.rev=filter(ogistic.data.1725, `_Day`=='7'|`_Day`=='8'|`_Day`=='9'|`_Day`=='10')
+```
+fitting different logistic regression models with increasing complexity  
+simple model including housing only
+```{r}
+ogreg.1725.rev.add.1a <- glm(strategy.class ~ Housing, family = binomial, data = ogistic.data.1725.rev)
+```  
+simple model including Strain only
+```{r}
+ogreg.1725.rev.add.1b <- glm(strategy.class ~ Strain, family = binomial, data = ogistic.data.1725.rev)
+```  
+additive model including all factors
+```{r}
+ogreg.1725.rev.add.2 <- glm(strategy.class ~ Housing + Strain, family = binomial, data = ogistic.data.1725.rev)
+```  
+interaction model including all factors
+```{r}
+ogreg.1725.rev.int <- glm(strategy.class ~ Housing * Strain, family = binomial, data = ogistic.data.1725.rev)
+```
+Model comparisons using the anova function
+```{r}
+anova(ogreg.1725.rev.add.1b, ogreg.1725.rev.add.1a, test="Chisq")
+```  
+model including Strain better than model including housing
+```{r}
+anova(ogreg.1725.rev.add.2, ogreg.1725.rev.add.1b, test="Chisq")
+```
+adding factor housing does not improve the model
+```{r}
+anova(ogreg.1725.rev.int, ogreg.1725.rev.add.1b, test="Chisq")
+```
+interaction model better than additive model
+
+summary of minimal adequate model
+```{r}
+summary(ogreg.1725.rev.int)
+exp(coef(ogreg.1725.rev.int))
+```
+impact of predictor "Strain"
+```{r}
+pre.data.17.revs <- data.frame(Strain=c("WT","WT", "dTg","dTg", "PS1dE9","PS1dE9", "APPswe","APPswe"),Housing=c("STD","ENR","STD","ENR","STD","ENR","STD","ENR"))
+pre.data.17.revs$prob <- predict(ogreg.1725.rev.int, newdata = pre.data.17.revs, type = "response")
+pre.data.17.revs
+```
+
+## Age group 13-14 acquisition Strain x Housing {#anchor48}
+  
+***  
+
+
+```{r}
+ogistic.data.acq.1314=filter(ogistic.data.1314,  `_Day`=='1'|`_Day`=='2'|`_Day`=='3'|`_Day`=='4'|`_Day`=='5'|`_Day`=='6')
+```
+fitting different logistic regression models with increasing complexity
+simple model including housing only
+```{r}
+ogreg.1314.acq.add.1a <- glm(strategy.class ~ Housing, family = binomial, data = ogistic.data.acq.1314)
+```
+simple model including Strain only
+```{r}
+ogreg.1314.acq.add.1b <- glm(strategy.class ~ Strain, family = binomial, data = ogistic.data.acq.1314)
+```
+additive model including all factors
+```{r}
+ogreg.1314.acq.add.2 <- glm(strategy.class ~ Housing + Strain, family = binomial, data = ogistic.data.acq.1314)
+```
+interaction model including all factors
+```{r}
+ogreg.1314.acq.int <- glm(strategy.class ~ Housing * Strain, family = binomial, data = ogistic.data.acq.1314)
+```
+comparisons between model using the anova function
+```{r}
+anova(ogreg.1314.acq.add.1b, ogreg.1314.acq.add.1a, test="Chisq")
+```
+model with Strain only is good
+```{r}
+anova(ogreg.1314.acq.add.2, ogreg.1314.acq.add.1b, test="Chisq")
+```
+adding factor housing also has good fit 
+```{r}
+anova(ogreg.1314.acq.int, ogreg.1314.acq.add.1b, test="Chisq")
+```
+Strain model is best
+
+summary of interactive model
+```{r}
+summary(ogreg.1314.acq.int)
+exp(coef(ogreg.1314.acq.int))
+```
+
+impact of predictors "Strain"
+```{r}
+pre.data1314.acq <- data.frame(Strain=c("WT","WT", "dTg","dTg"),Housing=c("STD","ENR","STD","ENR"))
+pre.data1314.acq$prob <- predict(ogreg.1314.acq.add.1b, newdata = pre.data1314.acq, type = "response")
+pre.data1314.acq
+```  
+impact of predictors "Housing"
+```{r}
+pre.data1314.acq <- data.frame(Strain=c("WT","WT", "dTg","dTg"),Housing=c("STD","ENR","STD","ENR"))
+pre.data1314.acq$prob <- predict(ogreg.1314.acq.add.1a, newdata = pre.data1314.acq, type = "response")
+pre.data1314.acq
+```  
+
+## Age group 13-14 reversal Strain x Housing {#anchor49}
+  
+***  
+
+
+```{r}
+ogistic.data.rev.1314=filter(ogistic.data.1314,  `_Day`=='7'|`_Day`=='8'|`_Day`=='9'|`_Day`=='10')
+```
+fitting different logistic regression models with increasing complexity
+simple model including housing only
+```{r}
+ogreg.1314.rev.add.1a <- glm(strategy.class ~ Housing, family = binomial, data = ogistic.data.rev.1314)
+```
+simple model including Strain only
+```{r}
+ogreg.1314.rev.add.1b <- glm(strategy.class ~ Strain, family = binomial, data = ogistic.data.rev.1314)
+```
+additive model including all factors
+```{r}
+ogreg.1314.rev.add.2 <- glm(strategy.class ~ Housing + Strain, family = binomial, data = ogistic.data.rev.1314)
+```
+interaction model including all factors
+```{r}
+ogreg.1314.rev.int <- glm(strategy.class ~ Housing * Strain, family = binomial, data = ogistic.data.rev.1314)
+```
+comparisons between model using the anova function
+```{r}
+anova(ogreg.1314.rev.add.1b, ogreg.1314.rev.add.1a, test="Chisq")
+```
+```{r}
+anova(ogreg.1314.rev.add.2, ogreg.1314.rev.add.1b, test="Chisq")
+```
+adding factor does not improve model
+```{r}
+anova(ogreg.1314.rev.int, ogreg.1314.rev.add.1b, test="Chisq")
+```
+Strain model is the best
+
+summary of interaction model
+```{r}
+summary(ogreg.1314.rev.int)
+exp(coef(ogreg.1314.rev.int))
+```
+
+impact of predictors "Strain"
+```{r}
+pre.data1314.rev <- data.frame(Strain=c("WT","WT", "dTg","dTg"),Housing=c("STD","ENR","STD","ENR"))
+pre.data1314.rev$prob <- predict(ogreg.1314.rev.add.1b, newdata = pre.data1314.rev, type = "response")
+pre.data1314.rev
+```  
+impact of predictors "Housing"
+```{r}
+pre.data1314.rev <- data.frame(Strain=c("WT","WT", "dTg","dTg"),Housing=c("STD","ENR","STD","ENR"))
+pre.data1314.rev$prob <- predict(ogreg.1314.rev.add.1a, newdata = pre.data1314.rev, type = "response")
+pre.data1314.rev
+```
+
+## Age group 3 acquisition Strain x Housing {#anchor50}
+  
+***  
+
+
+```{r}
+ogistic.data.acq.3=filter(ogistic.data.3,  `_Day`=='1'|`_Day`=='2'|`_Day`=='3'|`_Day`=='4'|`_Day`=='5'|`_Day`=='6')
+```
+fitting different logistic regression models with increasing complexity
+simple model including housing only
+```{r}
+ogreg.3.acq.add.1a <- glm(strategy.class ~ Housing, family = binomial, data = ogistic.data.acq.3)
+```
+simple model including Strain only
+```{r}
+ogreg.3.acq.add.1b <- glm(strategy.class ~ Strain, family = binomial, data = ogistic.data.acq.3)
+```
+additive model including all factors
+```{r}
+ogreg.3.acq.add.2 <- glm(strategy.class ~ Housing + Strain, family = binomial, data = ogistic.data.acq.3)
+```
+interaction model including all factors
+```{r}
+ogreg.3.acq.int <- glm(strategy.class ~ Housing * Strain, family = binomial, data = ogistic.data.acq.3)
+```
+comparisons between model using the anova function
+```{r}
+anova(ogreg.3.acq.add.1b, ogreg.3.acq.add.1a, test="Chisq")
+```
+model with Strain only is really good
+```{r}
+anova(ogreg.3.acq.add.2, ogreg.3.acq.add.1b, test="Chisq")
+```
+adding factor housing also has good fit  
+```{r}
+anova(ogreg.3.acq.int, ogreg.3.acq.add.1b, test="Chisq")
+```
+interaction model better than additive model
+interaction model is the best
+
+summary of interaction model
+```{r}
+summary(ogreg.3.acq.int)
+exp(coef(ogreg.3.acq.int))
+```
+
+impact of predictors "Strain x Housing"
+```{r}
+pre.data3.acq <- data.frame(Strain=c("WT","WT", "dTg","dTg", "PS1dE9","PS1dE9", "APPswe","APPswe"),Housing=c("STD","ENR","STD","ENR","STD","ENR","STD","ENR"))
+pre.data3.acq$prob <- predict(ogreg.3.acq.int, newdata = pre.data3.acq, type = "response")
+pre.data3.acq
+```  
+
+## Age group 3 reversal Strain x Housing {#anchor51}
+  
+***  
+
+
+```{r}
+ogistic.data.rev.3=filter(ogistic.data.3,  `_Day`=='7'|`_Day`=='8'|`_Day`=='9'|`_Day`=='10')
+```
+fitting different logistic regression models with increasing complexity
+simple model including housing only
+```{r}
+ogreg.3.rev.add.1a <- glm(strategy.class ~ Housing, family = binomial, data = ogistic.data.rev.3)
+```
+simple model including Strain only
+```{r}
+ogreg.3.rev.add.1b <- glm(strategy.class ~ Strain, family = binomial, data = ogistic.data.rev.3)
+```
+additive model including all factors
+```{r}
+ogreg.3.rev.add.2 <- glm(strategy.class ~ Housing + Strain, family = binomial, data = ogistic.data.rev.3)
+```
+interaction model including all factors
+```{r}
+ogreg.3.rev.int <- glm(strategy.class ~ Housing * Strain, family = binomial, data = ogistic.data.rev.3)
+```
+comparisons between model using the anova function
+```{r}
+anova(ogreg.3.rev.add.1b, ogreg.3.rev.add.1a, test="Chisq")
+```
+model with Strain only is really good (Pr=3.245e-13)
+```{r}
+anova(ogreg.3.rev.add.2, ogreg.3.rev.add.1b, test="Chisq")
+```
+adding factor housing also has good fit  (Pr=1.945e-5)
+```{r}
+anova(ogreg.3.rev.int, ogreg.3.rev.add.1b, test="Chisq")
+```
+Strain is best model
+
+summary of interaction model
+```{r}
+summary(ogreg.3.rev.int)
+exp(coef(ogreg.3.rev.int))
+```
+
+impact of predictors "Strain"
+```{r}
+pre.data3.rev <- data.frame(Strain=c("WT","WT", "dTg","dTg", "PS1dE9","PS1dE9", "APPswe","APPswe"),Housing=c("STD","ENR","STD","ENR","STD","ENR","STD","ENR"))
+pre.data3.rev$prob <- predict(ogreg.3.rev.add.1b, newdata = pre.data3.rev, type = "response")
+pre.data3.rev
+```  
+impact of predictors "Housing"
+```{r}
+pre.data3.rev <- data.frame(Strain=c("WT","WT", "dTg","dTg", "PS1dE9","PS1dE9", "APPswe","APPswe"),Housing=c("STD","ENR","STD","ENR","STD","ENR","STD","ENR"))
+pre.data3.rev$prob <- predict(ogreg.3.rev.add.1a, newdata = pre.data3.rev, type = "response")
+pre.data3.rev
+```  
+# **Thresholded** Visualization results log. reg {#anchor52}   
+
+## 2D - Age group 3 {#anchor52.1}
+```{r}
+setwd("C:/Google/Uni/Bachelorarbeit/R/Analysis")
+probs=read_excel("results_logistic_thresh.xlsx")
+probs$`Experiment_Phase`=as.factor(probs$`Experiment_Phase`)
+probs3=filter(probs, Age_group=='3' & Model=='STRAIN*HOUSING')
+
+gg = ggplot(probs3, mapping=aes(x=Strain, y=Probability, color=Housing)) + geom_jitter() + facet_grid(~Experiment_Phase) + labs(x="Strain", y="P(strategy.class 1)", title="Probability of 3 months old mice using Strategy class 1")
+
+ggplotly(p=gg, height=400, width=800)
+```  
+Strain*Housing interaction model used for predictions.  
+
+## 2D - Age group 13-14 {#anchor52.2}
+```{r}
+probs13=filter(probs, Age_group=='13-14')
+
+gg = ggplot(probs13, mapping=aes(x=Strain, y=Probability, color=Housing)) + geom_jitter() + facet_grid(~Experiment_Phase) + labs(x="Strain", y="P(strategy.class 1)", title="Probability of 13-14 months old mice using Strategy class 1")
+ggplotly(gg, height=400, width=800)
+```  
+Strain*Housing interaction model used for predictions of REV and BOTH phases. In the ACQ experiment phase, the additive model (Strain+Housing) shows the best fit. [Take a look here]{#anchor36} 
+
+## 2D - Age group 17-25 {#anchor52.3}
+```{r}
+probs17=filter(probs, Age_group=='17-25')
+
+gg = ggplot(probs17, mapping=aes(x=Strain, y=Probability, color=Housing)) + geom_jitter() + facet_grid(~Experiment_Phase) + labs(x="Strain", y="P(strategy.class 1)", title="Probability of 17-25 months old mice using Strategy class 1", caption="test")
+ggplotly(gg, height=400, width=800)
+```
 # References {#ref}
