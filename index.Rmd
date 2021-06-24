@@ -29,6 +29,7 @@ library(tidyverse)
 library(ggh4x)
 library(rmdformats)
 library(plotly)
+library(RColorBrewer)
 
 ## Global options
 options(max.print="75")
@@ -1493,10 +1494,14 @@ knitr::include_graphics("strategy.png")
 ```{r}
 setwd("C:/Google/Uni/Bachelorarbeit/R/Analysis")
 probs=read_excel("results_logistic_new.xlsx")
+myColors = brewer.pal(4,"Set1")
+names(myColors)=levels(probs$Housing)
+colScale=scale_colour_manual(name="Housing",values=myColors)
 probs$`Experiment_Phase`=as.factor(probs$`Experiment_Phase`)
 probs3=filter(probs, Age_group=='3' & Model=='STRAIN*HOUSING')
 
 gg = ggplot(probs3, mapping=aes(x=Strain, y=Probability, color=Housing)) + geom_jitter() + facet_grid(~Experiment_Phase) + labs(x="Strain", y="P(strategy.class 1)", title="Probability of 3 months old mice using Strategy class 1")
+gg=gg+colScale
 
 ggplotly(p=gg, height=400, width=800)
 ```  
@@ -1507,18 +1512,20 @@ Strain*Housing interaction model used for predictions.
 probs13=filter(probs, Age_group=='13-14')
 
 gg = ggplot(probs13, mapping=aes(x=Strain, y=Probability, color=Housing)) + geom_jitter() + facet_grid(~Experiment_Phase) + labs(x="Strain", y="P(strategy.class 1)", title="Probability of 13-14 months old mice using Strategy class 1")
+gg=gg+colScale
 ggplotly(gg, height=400, width=800)
 ```  
-Strain*Housing interaction model used for predictions of REV and BOTH phases. In the ACQ experiment phase, the additive model (Strain+Housing) shows the best fit. [Take a look here]{#anchor36} 
+Strain*Housing interaction model used for predictions of REV and BOTH phases. In the ACQ experiment phase, the additive model (Strain+Housing) shows the best fit. [Take a look here](#anchor36)
 
 ## 2D - Age group 17-25 {#anchor41.3}
 ```{r}
 probs17=filter(probs, Age_group=='17-25')
 
 gg = ggplot(probs17, mapping=aes(x=Strain, y=Probability, color=Housing)) + geom_jitter() + facet_grid(~Experiment_Phase) + labs(x="Strain", y="P(strategy.class 1)", title="Probability of 17-25 months old mice using Strategy class 1", caption="test")
+gg=gg+colScale
 ggplotly(gg, height=400, width=800)
 ```
-Strategy.class ~ Strain and Strategy.class ~ Housing models were used separately for ACQ and Both experiment phases. REV phase has best model fit with interaction model.  
+Strategy.class ~ Strain and Strategy.class ~ Housing models were used separately for ACQ and Both experiment phases. REV phase has best model fit with the Strategy.class ~ Strain*Housing interaction model.  
 
 ## 3D Surface Plot {#anchor41.4}
 ```{r}
@@ -2086,29 +2093,39 @@ pre.data3.rev
 ```{r}
 setwd("C:/Google/Uni/Bachelorarbeit/R/Analysis")
 probs=read_excel("results_logistic_thresh.xlsx")
+myColors = brewer.pal(4,"Set1")
+names(myColors)=levels(probs$Housing)
+colScale=scale_colour_manual(name="Housing",values=myColors)
 probs$`Experiment_Phase`=as.factor(probs$`Experiment_Phase`)
-probs3=filter(probs, Age_group=='3' & Model=='STRAIN*HOUSING')
+probs3=filter(probs, Age_group=='3')
 
 gg = ggplot(probs3, mapping=aes(x=Strain, y=Probability, color=Housing)) + geom_jitter() + facet_grid(~Experiment_Phase) + labs(x="Strain", y="P(strategy.class 1)", title="Probability of 3 months old mice using Strategy class 1")
+gg= gg+colScale
+
 
 ggplotly(p=gg, height=400, width=800)
 ```  
-Strain*Housing interaction model used for predictions.  
+For ACQ Phase, Strain*Housing interaction model was used. For BOTH Phases, Strain+Housing additive model was used for predictions and for REV the simple strategy.class ~ Strain and strategy.class ~ Housing models were used separately. 
 
 ## 2D - Age group 13-14 {#anchor52.2}
 ```{r}
 probs13=filter(probs, Age_group=='13-14')
 
 gg = ggplot(probs13, mapping=aes(x=Strain, y=Probability, color=Housing)) + geom_jitter() + facet_grid(~Experiment_Phase) + labs(x="Strain", y="P(strategy.class 1)", title="Probability of 13-14 months old mice using Strategy class 1")
+gg=gg+colScale
 ggplotly(gg, height=400, width=800)
 ```  
-Strain*Housing interaction model used for predictions of REV and BOTH phases. In the ACQ experiment phase, the additive model (Strain+Housing) shows the best fit. [Take a look here]{#anchor36} 
+Strain*Housing interaction model was used for predictions of BOTH phases. In the ACQ and REV experiment phases, the simple models (strategy.class ~ Strain and strategy.class ~ Housing) showed the best fit. [Take a look here](#anchor36) 
 
 ## 2D - Age group 17-25 {#anchor52.3}
 ```{r}
 probs17=filter(probs, Age_group=='17-25')
 
 gg = ggplot(probs17, mapping=aes(x=Strain, y=Probability, color=Housing)) + geom_jitter() + facet_grid(~Experiment_Phase) + labs(x="Strain", y="P(strategy.class 1)", title="Probability of 17-25 months old mice using Strategy class 1", caption="test")
+gg=gg+colScale
 ggplotly(gg, height=400, width=800)
 ```
+For the ACQ AND BOTH phases, the simple strategy.class ~ Strain and strategy.class ~ Housing models were used and for the REV phase, the interactive Strain*Housing model showed the best fit and was therefore used for the predictions.  
+
+
 # References {#ref}
