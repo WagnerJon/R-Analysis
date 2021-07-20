@@ -108,6 +108,10 @@ write_bib(file = "r-packages.bib")
   * [2D - Age group 3 months](#anchor52.1)
   * [2D - Age group 13-14 months](#anchor52.2)
   * [2D - Age group 17-25 months](#anchor52.3)
+* [**Publication ready** Visualization results log.reg](#anchor53)
+  * [2D - Age group 3 months](#anchor53.1)
+  * [2D - Age group 13-14 months](#anchor53.2)
+  * [2D - Age group 17-25 months](#anchor53.3)
 * [References](#ref)
  
 
@@ -553,27 +557,19 @@ Rtrack::plot_density(dTgpenr25.metrics, title = "dTg Probe Heatmap ENR 17-25mo",
 ###########APP_Probe##########
 Rtrack::plot_density(APPpstd3.metrics, title = "APPswe Probe Heatmap STD 3mo",
   col = colorRampPalette(c("#000C9E", "#00FEF6", "#FE009E"))(100))
-#Rtrack::plot_density(APPpstd14.metrics, title = "APPswe Probe Heatmap STD 13-14mo",
-#  col = colorRampPalette(c("#000C9E", "#00FEF6", "#FE009E"))(100))
 Rtrack::plot_density(APPpstd25.metrics, title = "APPswe Probe Heatmap STD 17-25mo",
   col = colorRampPalette(c("#000C9E", "#00FEF6", "#FE009E"))(100))
 Rtrack::plot_density(APPpenr3.metrics, title = "APPswe Probe Heatmap ENR 3mo",
   col = colorRampPalette(c("#000C9E", "#00FEF6", "#FE009E"))(100))
-#Rtrack::plot_density(APPpenr14.metrics, title = "APPswe Probe Heatmap ENR 13-14mo",
-#  col = colorRampPalette(c("#000C9E", "#00FEF6", "#FE009E"))(100))
 Rtrack::plot_density(APPpenr25.metrics, title = "APPswe Probe Heatmap ENR 17-25mo",
   col = colorRampPalette(c("#000C9E", "#00FEF6", "#FE009E"))(100))
 ###########PS1_Probe##########
 Rtrack::plot_density(PS1pstd3.metrics, title = "PS1dE9 Probe Heatmap STD 3mo",
   col = colorRampPalette(c("#000C9E", "#00FEF6", "#FE009E"))(100))
-#Rtrack::plot_density(PS1pstd14.metrics, title = "PS1dE9 Probe Heatmap STD 13-14mo",
-#  col = colorRampPalette(c("#000C9E", "#00FEF6", "#FE009E"))(100))
 Rtrack::plot_density(PS1pstd25.metrics, title = "PS1dE9 Probe Heatmap STD 17-25mo",
   col = colorRampPalette(c("#000C9E", "#00FEF6", "#FE009E"))(100))
 Rtrack::plot_density(PS1penr3.metrics, title = "PS1dE9 Probe Heatmap ENR 3mo",
   col = colorRampPalette(c("#000C9E", "#00FEF6", "#FE009E"))(100))
-#Rtrack::plot_density(PS1penr14.metrics, title = "PS1dE9 Probe Heatmap ENR 13-14mo",
-#  col = colorRampPalette(c("#000C9E", "#00FEF6", "#FE009E"))(100))
 Rtrack::plot_density(PS1penr25.metrics, title = "PS1dE9 Probe Heatmap ENR 17-25mo",
   col = colorRampPalette(c("#000C9E", "#00FEF6", "#FE009E"))(100))
 ```
@@ -2094,6 +2090,7 @@ pre.data3.rev
 setwd("C:/Google/Uni/Bachelorarbeit/R/Analysis")
 probs=read_excel("results_logistic_thresh.xlsx")
 myColors = brewer.pal(4,"Set1")
+myColors2= pal_npg("nrc")(3)
 names(myColors)=levels(probs$Housing)
 colScale=scale_colour_manual(name="Housing",values=myColors)
 probs$`Experiment_Phase`=as.factor(probs$`Experiment_Phase`)
@@ -2121,11 +2118,274 @@ Strain*Housing interaction model was used for predictions of BOTH phases. In the
 ```{r}
 probs17=filter(probs, Age_group=='17-25')
 
-gg = ggplot(probs17, mapping=aes(x=Strain, y=Probability, color=Housing)) + geom_jitter() + facet_grid(~Experiment_Phase) + labs(x="Strain", y="P(strategy.class 1)", title="Probability of 17-25 months old mice using Strategy class 1", caption="test")
+gg = ggplot(probs17, mapping=aes(x=Strain, y=Probability, color=Housing)) + geom_jitter() +scale_x_discrete(guide=guide_axis(n.dodge =2))+ facet_grid(~factor(Experiment_Phase, levels=c('ACQ','REV','BOTH'))) + labs(x="Strain", y="P(strategy.class 1)", title="Probability of 17-25 months old mice using Strategy class 1", caption="based on data from Govind & Meriem MWM Experiment in 2014")
 gg=gg+colScale
-ggplotly(gg, height=400, width=800)
+gg
+gg_bw=gg+theme_bw(base_size = 12)
+gg_bw
+gg_jco=gg_bw+scale_color_jco()
+gg_jco
+
+ggplotly(gg_jco, height=400, width=800)
 ```
 For the ACQ AND BOTH phases, the simple strategy.class ~ Strain and strategy.class ~ Housing models were used and for the REV phase, the interactive Strain*Housing model showed the best fit and was therefore used for the predictions.  
 
+# **Publication Ready** Logistic regression  {#anchor42} 
 
+## Strategy Legend  
+
+* 1 - thigmotaxis  
+* 2 - circling  
+* 3 - random path  
+* 4 - scanning  
+* 5 - chaining  
+* 6 - directed search  
+* 7 - corrected search  
+* 8 - direct path  
+* 9 - perseverance  
+
+***
+  
+Strategies 1-5 are less hippocampus-dependent, 'unspatial' and therefore get strategy.class = 0. 
+In contrast to that, strategies 6-9 are more hippocampus-dependent, 'spatial' and get strategy.class = 1 assigned.  
+
+All probabilities in the following codes relate to choosing strategy.class = 1.
+
+***
+```{r}
+setwd("C:/Google/Uni/Bachelorarbeit/R/Analysis")
+logistic.data.pub=read_excel("logistic_reg_thresh.xlsx")
+```
+
+## Age group 17-25 Housing  {#anchor43 }
+
+***  
+
+```{r}
+logistic.data.pub.1725=filter(logistic.data.pub, Age_group1725=='1')
+```
+
+interaction model including all factors
+```{r}
+logreg.pub.1725.int <- glm(strategy.class ~ Housing * Strain, family = binomial, data = logistic.data.pub.1725)
+```
+
+interaction model 
+
+impact of predictor "Strain*Housing"
+```{r}
+pre.data.pub.17 <- data.frame(Strain=c("WT","WT", "dTg","dTg", "PS1dE9","PS1dE9", "APPswe","APPswe"),Housing=c("STD","ENR","STD","ENR","STD","ENR","STD","ENR"))
+pre.data.pub.17$prob <- predict(logreg.1725.int, newdata = pre.data.pub.17, type = "response")
+pre.data.pub.17
+```
+
+
+## Age group 13-14 Strain x Housing effects {#anchor44}
+  
+***  
+
+```{r}
+logistic.data.pub.1314=filter(logistic.data.pub, Age_group1314=='1')
+```
+
+interaction model including all factors
+```{r}
+logreg.1314.pub.int <- glm(strategy.class ~ Housing * Strain, family = binomial, data = logistic.data.pub.1314)
+```
+
+impact of predictor "Strain*Housing"
+```{r}
+pre.data.pub.1314 <- data.frame(Strain=c("WT", "WT","dTg","dTg"),Housing=c("STD","ENR","STD","ENR"))
+pre.data.pub.1314$prob <- predict(logreg.1314.pub.int, newdata = pre.data.pub.1314, type = "response")
+pre.data.pub.1314
+
+```  
+
+## Age group 3 Strain x Housing {#anchor45}
+  
+***  
+
+
+```{r}
+logistic.data.pub.3=filter(logistic.data.pub, Age_group3=='1')
+```
+
+interaction model including all factors
+```{r}
+logreg.pub.3.int <- glm(strategy.class ~ Housing * Strain, family = binomial, data = logistic.data.pub.3)
+```
+
+impact of predictors "Strain * Housing"
+```{r}
+pre.data.pub.3x <- data.frame(Strain=c("WT","WT", "dTg","dTg", "PS1dE9","PS1dE9", "APPswe","APPswe"),Housing=c("STD","ENR","STD","ENR","STD","ENR","STD","ENR"))
+pre.data.pub.3x$prob <- predict(logreg.pub.3.int, newdata = pre.data.pub.3x, type = "response")
+pre.data.pub.3x
+```
+
+## Age group 17-25 acquisition Strain  {#anchor46 }
+
+***  
+
+```{r}
+logistic.data.pub.1725.acq=filter(logistic.data.pub.1725, `_Day`=='1'|`_Day`=='2'|`_Day`=='3'|`_Day`=='4'|`_Day`=='5'|`_Day`=='6')
+```
+
+interaction model including all factors
+```{r}
+logreg.1725.pub.acq.int <- glm(strategy.class ~ Housing * Strain, family = binomial, data = logistic.data.pub.1725.acq)
+```
+
+impact of predictor "Strain*Housing"
+```{r}
+pre.data.pub.17.acq <- data.frame(Strain=c("WT","WT", "dTg","dTg", "PS1dE9","PS1dE9", "APPswe","APPswe"),Housing=c("STD","ENR","STD","ENR","STD","ENR","STD","ENR"))
+pre.data.pub.17.acq$prob <- predict(logreg.1725.pub.acq.int, newdata = pre.data.pub.17.acq, type = "response")
+pre.data.pub.17.acq
+```
+## Age group 17-25 reversal Strain  {#anchor47 }
+
+***  
+
+```{r}
+logistic.data.pub.1725.rev=filter(logistic.data.pub.1725, `_Day`=='7'|`_Day`=='8'|`_Day`=='9'|`_Day`=='10')
+```
+  
+interaction model including all factors
+```{r}
+logreg.pub.1725.rev.int <- glm(strategy.class ~ Housing * Strain, family = binomial, data = logistic.data.pub.1725.rev)
+```
+
+impact of predictor "Strain*Housing"
+```{r}
+pre.data.17.pub.revs <- data.frame(Strain=c("WT","WT", "dTg","dTg", "PS1dE9","PS1dE9", "APPswe","APPswe"),Housing=c("STD","ENR","STD","ENR","STD","ENR","STD","ENR"))
+pre.data.17.pub.revs$prob <- predict(logreg.pub.1725.rev.int, newdata = pre.data.17.pub.revs, type = "response")
+pre.data.17.pub.revs
+```
+
+## Age group 13-14 acquisition Strain x Housing {#anchor48}
+  
+***  
+
+
+```{r}
+logistic.data.pub.acq.1314=filter(logistic.data.pub.1314,  `_Day`=='1'|`_Day`=='2'|`_Day`=='3'|`_Day`=='4'|`_Day`=='5'|`_Day`=='6')
+```
+
+interaction model including all factors
+```{r}
+logreg.pub.1314.acq.int <- glm(strategy.class ~ Housing * Strain, family = binomial, data = logistic.data.pub.acq.1314)
+```
+
+impact of predictors "Strain"
+```{r}
+pre.data.pub.1314.acq <- data.frame(Strain=c("WT","WT", "dTg","dTg"),Housing=c("STD","ENR","STD","ENR"))
+pre.data.pub.1314.acq$prob <- predict(logreg.pub.1314.acq.int, newdata = pre.data.pub.1314.acq, type = "response")
+pre.data.pub.1314.acq
+```  
+
+
+## Age group 13-14 reversal Strain x Housing {#anchor49}
+  
+***  
+
+
+```{r}
+logistic.data.pub.rev.1314=filter(logistic.data.pub.1314,  `_Day`=='7'|`_Day`=='8'|`_Day`=='9'|`_Day`=='10')
+```
+
+interaction model including all factors
+```{r}
+logreg.pub.1314.rev.int <- glm(strategy.class ~ Housing * Strain, family = binomial, data = logistic.data.pub.rev.1314)
+```
+
+impact of predictors "Strain"
+```{r}
+pre.data.pub.1314.rev <- data.frame(Strain=c("WT","WT", "dTg","dTg"),Housing=c("STD","ENR","STD","ENR"))
+pre.data.pub.1314.rev$prob <- predict(logreg.pub.1314.rev.int, newdata = pre.data.pub.1314.rev, type = "response")
+pre.data.pub.1314.rev
+```  
+## Age group 3 acquisition Strain x Housing {#anchor50}
+  
+***  
+
+
+```{r}
+logistic.data.pub.acq.3=filter(logistic.data.pub.3,  `_Day`=='1'|`_Day`=='2'|`_Day`=='3'|`_Day`=='4'|`_Day`=='5'|`_Day`=='6')
+```
+
+interaction model including all factors
+```{r}
+logreg.pub.3.acq.int <- glm(strategy.class ~ Housing * Strain, family = binomial, data = logistic.data.pub.acq.3)
+```
+
+impact of predictors "Strain x Housing"
+```{r}
+pre.data.pub.3.acq <- data.frame(Strain=c("WT","WT", "dTg","dTg", "PS1dE9","PS1dE9", "APPswe","APPswe"),Housing=c("STD","ENR","STD","ENR","STD","ENR","STD","ENR"))
+pre.data.pub.3.acq$prob <- predict(logreg.pub.3.acq.int, newdata = pre.data.pub.3.acq, type = "response")
+pre.data.pub.3.acq
+```  
+
+## Age group 3 reversal Strain x Housing {#anchor51}
+  
+***  
+
+
+```{r}
+logistic.data.pub.rev.3=filter(logistic.data.pub.3,  `_Day`=='7'|`_Day`=='8'|`_Day`=='9'|`_Day`=='10')
+```
+
+interaction model including all factors
+```{r}
+logreg.pub.3.rev.int <- glm(strategy.class ~ Housing * Strain, family = binomial, data = logistic.data.pub.rev.3)
+```
+
+impact of predictors "Strain x Housing"
+```{r}
+pre.data.pub.3.rev <- data.frame(Strain=c("WT","WT", "dTg","dTg", "PS1dE9","PS1dE9", "APPswe","APPswe"),Housing=c("STD","ENR","STD","ENR","STD","ENR","STD","ENR"))
+pre.data.pub.3.rev$prob <- predict(logreg.pub.3.rev.int, newdata = pre.data.pub.3.rev, type = "response")
+pre.data.pub.3.rev
+```  
+
+# **Publication Ready** Visualization results log. reg {#anchor53}   
+
+## 2D - Age group 3 {#anchor53.1}
+```{r}
+setwd("C:/Google/Uni/Bachelorarbeit/R/Analysis")
+probs.pub=read_excel("results_logistic_thresh_pub.xlsx")
+myColors = brewer.pal(4,"Set1")
+myColors2= pal_npg("nrc")(3)
+names(myColors)=levels(probs.pub$Housing)
+colScale=scale_colour_manual(name="Housing",values=myColors)
+probs.pub$`Experiment_Phase`=as.factor(probs.pub$`Experiment_Phase`)
+probs.pub3=filter(probs.pub, Age_group=='3')
+
+gg = ggplot(probs.pub3, mapping=aes(x=Strain, y=Probability, color=Housing)) + geom_jitter() + facet_grid(~Experiment_Phase) + labs(x="Strain", y="P(strategy.class 1)", title="Probability of 3 months old mice using Strategy class 1")
+gg= gg+colScale
+
+
+ggplotly(p=gg, height=400, width=800)
+```  
+
+## 2D - Age group 13-14 {#anchor53.2}
+```{r}
+probs.pub13=filter(probs.pub, Age_group=='13-14')
+
+gg = ggplot(probs.pub13, mapping=aes(x=Strain, y=Probability, color=Housing)) + geom_jitter() + facet_grid(~Experiment_Phase) + labs(x="Strain", y="P(strategy.class 1)", title="Probability of 13-14 months old mice using Strategy class 1")
+gg=gg+colScale
+ggplotly(gg, height=400, width=800)
+```  
+
+## 2D - Age group 17-25 {#anchor53.3}
+```{r}
+probs.pub17=filter(probs.pub, Age_group=='17-25')
+
+gg = ggplot(probs.pub17, mapping=aes(x=Strain, y=Probability, color=Housing)) + geom_jitter() +scale_x_discrete(guide=guide_axis(n.dodge =2))+ facet_grid(~factor(Experiment_Phase, levels=c('ACQ','REV','BOTH'))) + labs(x="Strain", y="P(strategy.class 1)", title="Probability of 17-25 months old mice using Strategy class 1", caption="based on data from Govind & Meriem MWM Experiment in 2014")
+gg=gg+colScale
+gg
+gg_bw=gg+theme_bw(base_size = 12)
+gg_bw
+gg_jco=gg_bw+scale_color_jco()
+gg_jco
+
+ggplotly(gg_jco, height=400, width=800)
+``` 
 # References {#ref}
