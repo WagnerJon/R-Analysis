@@ -29,6 +29,8 @@ As the machine-learning algorithm of [`RTrack`](https://rupertoverall.net/Rtrack
 
 Following the recomendation of the [`RTrack`](https://rupertoverall.net/Rtrack/) documentation, a confidence threshold of 0.4 was choosen, which means that all strategies that did not were called with a confidence of 0.4 or higher, were discarded. 
 
+# Plots
+
 ![Pub.Ready_3](https://raw.githubusercontent.com/WagnerJon/R-Analysis/main/pub_3.png)
 
 ![Pub.Ready_13](https://raw.githubusercontent.com/WagnerJon/R-Analysis/main/pub_13.png)
