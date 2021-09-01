@@ -11,13 +11,15 @@ In my R-Analysis notebook I additionally explored the possibilites of [`ggplot2`
 The most important metrics we wanted to extract from the raw data were the strategy usages and how they differ between Strains, Age groups, Housing and all combinations of those. Therefore we once again used [`RTrack`](https://rupertoverall.net/Rtrack/) to predict the strategies used by the mice for each Trial.  For each Trial we computed one of these tables, where the called strategy plus the confidence for all strategies are shown.   
 ![Strategy Table](https://raw.githubusercontent.com/WagnerJon/R-Analysis/main/Strategy_table.png)
 
-Algorithm of strategy calling:
+## Algorithm of strategy calling:
 
 The Rtrack algorithm was exclusively trained with data from Morris water maze experiments with mice of different sex and genotypes, where multiple experts visually classified images of swim paths into different search strategies. Those 9 search strategies followed the scheme described at [Rtrack Documentation - Strategy description](https://rupertoverall.net/Rtrack/articles/Rtrack_strategy_description.html "Rtrack Documentation") and were classified at least twice until no discrepancies in the called strategies were left. Cases, in which the swim path could not be decided without doubt due to a mixture of strategies in one path or due to none of the 9 strategies being adequate, were discarded
 
 We then assigned each track the strategy class 0 or 1 depending on their hippocampus-dependency. The assignment was done following figure 3 in [*Garthe et. al. 2016*](https://onlinelibrary.wiley.com/doi/pdf/10.1002/hipo.22520), where 'unspatial' strategies were labled with strategy class 0 and 'spatial' strategies were labled with class 1.   
 
 ![Strategy.class](https://raw.githubusercontent.com/WagnerJon/R-Analysis/main/strategy.class.png)
+
+## Logistic regression
 
 We´ve then done a logistic regression, which is a statistical model for a regression analysis. To do this, we first applied different logistic regression models with increasing complexity to our data and compared them using the ANOVA function. With this we choose the minimal adequate model, which is the simplest model, that describes the data appropiatly. With this model, we then could compute a prediction, which is the propability of a mouse of a specific experiment paradigm, choosing strategy class 1 and therefore using a hippocampus dependent strategy. 
 
