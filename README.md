@@ -41,4 +41,4 @@ Following the recomendation of the [`RTrack`](https://rupertoverall.net/Rtrack/)
 
 ## 17-25 months
 
-![Pub.Ready_17](https://raw.githubusercontent.com/WagnerJon/R-Analysis/main/pub_17.png)
+![Pub.Ready_17](https://raw.githubusercontent.com/WagnerJon/R-Analysis/main/pub_17.png)*image caption*
