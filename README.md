@@ -33,12 +33,12 @@ Following the recomendation of the [`RTrack`](https://rupertoverall.net/Rtrack/)
 
 ## 3 months
 
-![Pub.Ready_3](https://raw.githubusercontent.com/WagnerJon/R-Analysis/main/pub_3.png)*this is a caption*
+![Pub.Ready_3](https://raw.githubusercontent.com/WagnerJon/R-Analysis/main/pub_3.png)*fixed y axis scale tbd*
 
 ## 13-14 months
 
-![Pub.Ready_13](https://raw.githubusercontent.com/WagnerJon/R-Analysis/main/pub_13.png)*image caption test*
+![Pub.Ready_13](https://raw.githubusercontent.com/WagnerJon/R-Analysis/main/pub_13.png)*fixed y axis scale tbd*
 
 ## 17-25 months
 
-![Pub.Ready_17](https://raw.githubusercontent.com/WagnerJon/R-Analysis/main/pub_17.png)*image caption*
+![Pub.Ready_17](https://raw.githubusercontent.com/WagnerJon/R-Analysis/main/pub_17.png)*fixed y axis scale tbd*
