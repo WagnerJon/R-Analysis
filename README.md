@@ -31,8 +31,14 @@ Following the recomendation of the [`RTrack`](https://rupertoverall.net/Rtrack/)
 
 # Plots
 
+## 3 months
+
 ![Pub.Ready_3](https://raw.githubusercontent.com/WagnerJon/R-Analysis/main/pub_3.png)
 
+## 13-14 months
+
 ![Pub.Ready_13](https://raw.githubusercontent.com/WagnerJon/R-Analysis/main/pub_13.png)
+
+## 17-25 months
 
 ![Pub.Ready_17](https://raw.githubusercontent.com/WagnerJon/R-Analysis/main/pub_17.png)
