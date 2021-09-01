@@ -33,11 +33,11 @@ Following the recomendation of the [`RTrack`](https://rupertoverall.net/Rtrack/)
 
 ## 3 months
 
-![Pub.Ready_3](https://raw.githubusercontent.com/WagnerJon/R-Analysis/main/pub_3.png)
+![Pub.Ready_3](https://raw.githubusercontent.com/WagnerJon/R-Analysis/main/pub_3.png)*this is a caption*
 
 ## 13-14 months
 
-![Pub.Ready_13](https://raw.githubusercontent.com/WagnerJon/R-Analysis/main/pub_13.png)
+![Pub.Ready_13](https://raw.githubusercontent.com/WagnerJon/R-Analysis/main/pub_13.png)*image caption test*
 
 ## 17-25 months
 
