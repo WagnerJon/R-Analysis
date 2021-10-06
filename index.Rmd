@@ -112,6 +112,17 @@ write_bib(file = "r-packages.bib")
   * [2D - Age group 3 months](#anchor53.1)
   * [2D - Age group 13-14 months](#anchor53.2)
   * [2D - Age group 17-25 months](#anchor53.3)
+* [**Publication ready** Plots](#anchor54)
+  * [Velocity Plots](#anchor54.1)
+  * [Latency Plots](#anchor54.2)
+    * [Facet grid Latency Plots](#anchor54.21)
+  * [Path Length Plots](#anchor54.3)
+  * [Probe Trial time in goal quadrant Plots](#anchor54.4)
+  * [Probe Trial time in old goal zone Plots](#anchor54.5)
+  * [Probe Trial Distance to old goal Plots](#anchor54.6)
+  * [13 moProbe Trial old goal crossings Plots](#anchor54.7)
+  * [3 mo Probe Trial old goal crossings Plots](#anchor54.71)
+    * [Facet grid Probe Trial old goal crossings Plots](#anchor54.72)
 * [References](#ref)
  
 
@@ -917,41 +928,41 @@ t.test(mo25.dTg$path.length,mo25.AP$path.length)
   
 ***  
 
-### 17-25 WT/dTg
+### 3 WT/dTg
 ```{r}
-mo25.WT=filter(mo25, Strain=="WT")
-mo25.dTg=filter(mo25, Strain=="dTg")
-t.test(mo25.WT$latency.to.goal,mo25.dTg$latency.to.goal)
+mo3.WT=filter(mo3, Strain=="WT")
+mo3.dTg=filter(mo3, Strain=="dTg")
+t.test(mo3.WT$latency.to.goal,mo3.dTg$latency.to.goal)
 ```  
-### 17-25 WT/PS1dE9
+### 3 WT/PS1dE9
 ```{r}
-mo25.WT=filter(mo25, Strain=="WT")
-mo25.PS=filter(mo25, Strain=="PS1dE9")
-t.test(mo25.WT$latency.to.goal,mo25.PS$latency.to.goal)
+mo3.WT=filter(mo3, Strain=="WT")
+mo3.PS=filter(mo3, Strain=="PS1dE9")
+t.test(mo3.WT$latency.to.goal,mo3.PS$latency.to.goal)
 ```  
-### 17-25 WT/APPswe
+### 3 WT/APPswe
 ```{r}
-mo25.WT=filter(mo25, Strain=="WT")
-mo25.AP=filter(mo25, Strain=="APPswe")
-t.test(mo25.WT$latency.to.goal,mo25.AP$latency.to.goal)
+mo3.WT=filter(mo3, Strain=="WT")
+mo3.AP=filter(mo3, Strain=="APPswe")
+t.test(mo3.WT$latency.to.goal,mo3.AP$latency.to.goal)
 ```
-### 17-25 PS1dE9/APPswe
+### 3 PS1dE9/APPswe
 ```{r}
-mo25.PS=filter(mo25, Strain=="PS1dE9")
-mo25.AP=filter(mo25, Strain=="APPswe")
-t.test(mo25.PS$latency.to.goal,mo25.AP$latency.to.goal)
+mo3.PS=filter(mo3, Strain=="PS1dE9")
+mo3.AP=filter(mo3, Strain=="APPswe")
+t.test(mo3.PS$latency.to.goal,mo3.AP$latency.to.goal)
 ```  
-### 17-25 dTg/PS1dE9
+### 3 dTg/PS1dE9
 ```{r}
-mo25.dTg=filter(mo25, Strain=="dTg")
-mo25.AP=filter(mo25, Strain=="PS1dE9")
-t.test(mo25.dTg$latency.to.goal,mo25.PS$latency.to.goal)
+mo3.dTg=filter(mo3, Strain=="dTg")
+mo3.AP=filter(mo3, Strain=="PS1dE9")
+t.test(mo3.dTg$latency.to.goal,mo3.PS$latency.to.goal)
 ```  
-### 17-25 dTg/APPswe
+### 3 dTg/APPswe
 ```{r}
-mo25.dTg=filter(mo25, Strain=="dTg")
-mo25.AP=filter(mo25, Strain=="APPswe")
-t.test(mo25.dTg$latency.to.goal,mo25.AP$latency.to.goal)
+mo3.dTg=filter(mo3, Strain=="dTg")
+mo3.AP=filter(mo3, Strain=="APPswe")
+t.test(mo3.dTg$latency.to.goal,mo3.AP$latency.to.goal)
 ```  
 
 # Logistic regression {#anchor30}  
@@ -2358,8 +2369,10 @@ colScale=scale_colour_manual(name="Housing",values=myColors)
 probs.pub$`Experiment_Phase`=as.factor(probs.pub$`Experiment_Phase`)
 probs.pub3=filter(probs.pub, Age_group=='3')
 
-gg = ggplot(probs.pub3, mapping=aes(x=Strain, y=Probability, color=Housing)) + geom_jitter() + facet_grid(~Experiment_Phase) + labs(x="Strain", y="P(strategy.class 1)", title="Probability of 3 months old mice using Strategy class 1")
+gg = ggplot(probs.pub3, mapping=aes(x=Strain, y=Probability, color=Housing)) + geom_point() + facet_grid(~factor(Experiment_Phase, levels=c('ACQ','REV','BOTH'))) + labs(x="Strain", y="P(strategy.class 1)", title="Probability of 3 months old mice using Strategy class 1")
 gg= gg+colScale
+gg_bw=gg+theme_bw(base_size = 12)
+gg_bw
 
 
 ggplotly(p=gg, height=400, width=800)
@@ -2369,7 +2382,7 @@ ggplotly(p=gg, height=400, width=800)
 ```{r}
 probs.pub13=filter(probs.pub, Age_group=='13-14')
 
-gg = ggplot(probs.pub13, mapping=aes(x=Strain, y=Probability, color=Housing)) + geom_jitter() + facet_grid(~Experiment_Phase) + labs(x="Strain", y="P(strategy.class 1)", title="Probability of 13-14 months old mice using Strategy class 1")
+gg = ggplot(probs.pub13, mapping=aes(x=Strain, y=Probability, color=Housing)) + geom_point() + facet_grid(~factor(Experiment_Phase, levels=c('ACQ','REV','BOTH'))) + labs(x="Strain", y="P(strategy.class 1)", title="Probability of 13-14 months old mice using Strategy class 1")
 gg=gg+colScale
 ggplotly(gg, height=400, width=800)
 ```  
@@ -2378,7 +2391,7 @@ ggplotly(gg, height=400, width=800)
 ```{r}
 probs.pub17=filter(probs.pub, Age_group=='17-25')
 
-gg = ggplot(probs.pub17, mapping=aes(x=Strain, y=Probability, color=Housing)) + geom_jitter() +scale_x_discrete(guide=guide_axis(n.dodge =2))+ facet_grid(~factor(Experiment_Phase, levels=c('ACQ','REV','BOTH'))) + labs(x="Strain", y="P(strategy.class 1)", title="Probability of 17-25 months old mice using Strategy class 1", caption="based on data from Govind & Meriem MWM Experiment in 2014")
+gg = ggplot(probs.pub17, mapping=aes(x=Strain, y=Probability, color=Housing)) + geom_point() +scale_x_discrete(guide=guide_axis(n.dodge =2))+ facet_grid(~factor(Experiment_Phase, levels=c('ACQ','REV','BOTH'))) + labs(x="Strain", y="P(strategy.class 1)", title="Probability of 17-25 months old mice using Strategy class 1", caption="based on data from Govind & Meriem MWM Experiment in 2014")
 gg=gg+colScale
 gg
 gg_bw=gg+theme_bw(base_size = 12)
@@ -2388,4 +2401,253 @@ gg_jco
 
 ggplotly(gg_jco, height=400, width=800)
 ``` 
+
+#Prediction Model explanation
+
+Algorithm of strategy calling:
+
+The Rtrack algorithm was exclusively trained with data from Morris water maze experiments with mice of different sex and genotypes, where multiple experts visually classified images of swim paths into different search strategies. Those 9 search strategies followed the scheme described at [Rtrack Documentation - Strategy description](https://rupertoverall.net/Rtrack/articles/Rtrack_strategy_description.html "Rtrack Documentation") and were classified at least twice until no discrepancies in the called strategies were left. Cases, in which the swim path could not be decided without doubt due to a mixture of strategies in one path or due to none of the 9 strategies being adequate, were discarded. 
+
+We then assigned each track the strategy class 0 or 1 depending on their hippocampus-dependency. The assignment was done following figure 3 in [*Garthe et. al. 2016*](https://onlinelibrary.wiley.com/doi/pdf/10.1002/hipo.22520), where 'unspatial' strategies were labled with strategy class 0 and 'spatial' strategies were labled with class 1.[@garthe_mice_2016]
+
+![Strategy.class](https://raw.githubusercontent.com/WagnerJon/R-Analysis/main/strategy.class.png)
+
+We´ve then done a logistic regression, which is a statistical model for a regression analysis. To do this, we first applied different logistic regression models with increasing complexity to our data and compared them using the ANOVA function. With this we choose the minimal adequate model, which is the simplest model, that describes the data appropiatly. With this model, we then could compute a prediction, which is the propability of a mouse of a specific experiment paradigm, choosing strategy class 1 and therefore using a hippocampus dependent strategy. 
+
+As the machine-learning algorithm of [`RTrack`](https://rupertoverall.net/Rtrack/) always chooses a strategy for a Trial, even if the algorithm is not quite sure, there are a lot of strategy calls, that the algorithm does not have a high confidence in. It therefore is of interest to only choose and only work with data, where a certain confidence threshold is given. 
+
+> We have observed during testing that confidence scores above 0.4 are typically accurate and reproducible  
+> RTrack - Documentation[@overall_rtrack_2020]  
+
+Following the recomendation of the [`RTrack`](https://rupertoverall.net/Rtrack/) documentation, a confidence threshold of 0.4 was choosen, which means that all strategies that did not were called with a confidence of 0.4 or higher, were discarded.[@overall_rtrack_2020]
+
+# **Publication Ready** Plots {#anchor54}  
+
+```{r import from different pcs}
+setwd("C:/Google/Uni/Bachelorarbeit/R/Analysis")
+Results=read_excel("Results3.xlsx", col_types=c("text","text","text","text","text","text","logical","numeric","text","text","text","numeric","text","numeric","text","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric"))
+
+mo3=filter(Results, Age_group=='3')
+mo14=filter(Results, Age_group=='13-14')
+mo25=filter(Results, Age_group=='17-25')
+mo3.probe=filter(Results, Age_group=='3'&Probe=='TRUE')
+mo14.probe=filter(Results, Age_group=='13-14'&Probe=='TRUE')
+mo25.probe=filter(Results, Age_group=='17-25'&Probe=='TRUE')
+Results.paper=filter(Results, Age_group=='3'|Age_group=='13-14' )
+Results.paper.probe=filter(Results.paper, Probe=='TRUE')
+```
+
+## 13-14 Velocity Plot{#anchor54.1}
+```{r awesome plots velocity,fig.width=4}
+mo14  %>%
+mutate(mo14, `_Day`=fct_relevel(`_Day`,"1","2","3","4","5","6","7","8","9","10"))%>%
+ggplot(aes(x=`_Day`,y=mean.velocity, ,group=Condition))+
+  geom_line(stat="summary", fun.y=mean,aes(linetype=Condition), size=1)+
+  geom_point(stat="summary", fun.y=mean,aes(shape=Condition),size=2)+
+  scale_colour_grey()+
+  scale_shape_manual(values=c(16,1,17,2))+
+  scale_linetype_manual(values=c(1,1,2,2))+
+  stat_summary(fun.data = mean_se, geom = "errorbar")+
+  labs(x="Day",
+       y="Average Velocity [cm/s]",
+       title="Mean Velocity 13-14mo mice")+theme_bw(base_size = 12)
+```
+## 3 mo Velocity Plot{#anchor54.15}
+```{r awesome plots velocity 2,fig.width=5}
+mo3  %>%
+mutate(mo3, `_Day`=fct_relevel(`_Day`,"1","2","3","4","5","6","7","8","9","10"))%>%
+ggplot(aes(x=`_Day`,y=mean.velocity, ,group=Condition))+
+  geom_line(stat="summary", fun.y=mean,aes(linetype=Condition), size=1)+
+  geom_point(stat="summary", fun.y=mean,aes(shape=Condition),size=2)+
+  scale_colour_grey()+
+  scale_shape_manual(values=c(16,1,17,2,15,0,18,5))+
+  scale_linetype_manual(values=c(1,1,2,2,3,3,4,4))+
+  stat_summary(fun.data = mean_se, geom = "errorbar",size=.5)+
+  labs(x="Day",
+       y="Average Velocity [cm/s]",
+       title="Mean Velocity 3 mo mice")+theme_bw(base_size = 12)
+```
+## Velocity Plots box{#anchor54.17}
+```{r awesome plots velocity 3,fig.width=4}
+Results.paper  %>%
+ggplot(aes(x=`Age_group`,y=mean.velocity,fill=Age_group))+
+  geom_boxplot()+
+  scale_fill_brewer(palette="Greys")+
+  scale_x_discrete(limits=c("3", "13-14"))+
+  theme_classic(base_size = 12)+
+  theme(legend.position = c(.5, .8))+
+  labs(x="Age in months",
+       y="Average Velocity [cm/s]",
+       title="Mean Velocity all mice",
+       fill="Age group")
+```
+## Latency Plots 13/14 {#anchor54.2}
+```{r awesome plots Latency,fig.width=4,fig.height=3}
+mo14  %>%
+mutate(mo14, `_Day`=fct_relevel(`_Day`,"1","2","3","4","5","6","7","8","9","10"))%>%
+ggplot(aes(x=`_Day`,y=latency.to.goal, ,group=Condition))+
+  geom_line(stat="summary", fun.y=mean,aes(linetype=Condition), size=1)+
+  geom_point(stat="summary", fun.y=mean,aes(shape=Condition),size=2)+
+  scale_colour_grey()+
+  scale_shape_manual(values=c(16,1,17,2,15,0,18,5))+
+  scale_linetype_manual(values=c(1,1,2,2,3,3,4,4))+
+  stat_summary(fun.data = mean_se, geom = "errorbar",size=.5)+
+  theme_classic(base_size = 12)+
+    geom_vline(xintercept =7, linetype="dotted", 
+                color = "black", size=.5)+
+  labs(x="Day",
+       y="Latency [s]",
+       title="Mean Latency to goal 13-14mo mice")
+```
+
+### Latency Plot 3 {#anchor54.22}
+```{r awesome plots fc Latency 2,fig.width=4,fig.height=3}
+mo3  %>%
+mutate(mo3, `_Day`=fct_relevel(`_Day`,"1","2","3","4","5","6","7","8","9","10"))%>%
+ggplot(aes(x=`_Day`,y=latency.to.goal, ,group=Condition))+
+  geom_line(stat="summary", fun.y=mean,aes(linetype=Condition), size=1)+
+  geom_point(stat="summary", fun.y=mean,aes(shape=Condition),size=2)+
+  scale_colour_grey()+
+  scale_shape_manual(values=c(16,1,17,2,15,0,18,5))+
+  scale_linetype_manual(values=c(1,1,2,2,3,3,4,4))+
+  stat_summary(fun.data = mean_se, geom = "errorbar",size=.5)+
+  theme_classic(base_size = 12)+
+  geom_vline(xintercept =7, linetype="dotted", 
+                color = "black", size=.5)+
+  labs(x="Day",
+       y="Latency [s]",
+       title="Mean Latency to goal 3mo mice")
+```
+
+## Mean Path Length Plots 13 {#anchor54.3}
+```{r awesome plots path length 3,fig.width=4,fig.height=3}
+mo14  %>%
+mutate(mo14, `_Day`=fct_relevel(`_Day`,"1","2","3","4","5","6","7","8","9","10"))%>%
+ggplot(aes(x=`_Day`,y=path.length, ,group=Condition))+
+  geom_line(stat="summary", fun.y=mean,aes(linetype=Condition), size=1)+
+  geom_point(stat="summary", fun.y=mean,aes(shape=Condition),size=2)+
+  scale_colour_grey()+
+  scale_shape_manual(values=c(16,1,17,2,15,0,18,5))+
+  scale_linetype_manual(values=c(1,1,2,2,3,3,4,4))+
+  stat_summary(fun.data = mean_se, geom = "errorbar",size=.5)+
+  theme_classic(base_size = 12)+
+    geom_vline(xintercept =7, linetype="dotted", 
+                color = "black", size=.5)+
+  labs(x="Day",
+       y="Path length [cm]",
+       title="Mean Path Length 13-14mo mice")
+```
+## Mean Path Length Plots 3 {#anchor54.31}
+```{r awesome plots path length 4,fig.width=4,fig.height=3}
+mo3  %>%
+mutate(mo3, `_Day`=fct_relevel(`_Day`,"1","2","3","4","5","6","7","8","9","10"))%>%
+ggplot(aes(x=`_Day`,y=path.length, ,group=Condition))+
+  geom_line(stat="summary", fun.y=mean,aes(linetype=Condition), size=1)+
+  geom_point(stat="summary", fun.y=mean,aes(shape=Condition),size=2)+
+  scale_colour_grey()+
+  scale_shape_manual(values=c(16,1,17,2,15,0,18,5))+
+  scale_linetype_manual(values=c(1,1,2,2,3,3,4,4))+
+  stat_summary(fun.data = mean_se, geom = "errorbar",size=.5)+
+  theme_classic(base_size = 12)+
+  geom_vline(xintercept =7, linetype="dotted", 
+                color = "black", size=.5)+
+  labs(x="Day",
+       y="Path length [cm]",
+       title="Mean Path Length 3mo mice")
+```
+## Probe Trial time in goal quadrant Plots {#anchor54.4}
+```{r awesome plots probe trial 1,fig.width=3.5,fig.height=3}
+mo14.probe  %>%
+ggplot(aes(x='',y=time.in.zone.n.quadrant, ,group=Condition,fill=Condition))+
+  geom_boxplot()+
+  scale_fill_brewer(palette="Greys")+
+  theme_classic(base_size = 12)+
+  labs(x="Condition",
+       y="Time [s]",
+       title="Probe Trial time in goal quadrant 13-14mo mice")
+```
+
+## Probe Trial time in old goal zone Plots {#anchor54.5}
+```{r awesome plots probe trial 2,fig.width=3.5,fig.height=3}
+mo14.probe  %>%
+ggplot(aes(x='',y=time.in.zone.old.goal, ,group=Condition,fill=Condition))+
+  geom_boxplot()+
+  scale_fill_brewer(palette="Greys")+
+  theme_classic(base_size = 12)+
+  labs(x="Condition",
+       y="Time [s]",
+       title="Probe Trial time in old goal zone 13-14mo mice")
+```
+
+## Probe Trial distance to old goal Plots {#anchor54.6}
+```{r awesome plots probe trial 3,fig.width=3.5,fig.height=3}
+mo14.probe  %>%
+ggplot(aes(x='',y=mean.d.old.goal, ,group=Condition,fill=Condition))+
+  geom_boxplot()+
+  scale_fill_brewer(palette="Greys")+
+  theme_classic(base_size = 12)+
+  labs(x="Condition",
+       y="Distance [cm]",
+       title="Probe Trial mean distance to old goal 13-14mo mice")
+```
+
+## 13mo Probe Trial old goal crossings Plots {#anchor54.7}
+```{r awesome plots probe trial 4,fig.width=3,fig.height=3}
+mo14.probe  %>%
+ggplot(aes(x='',y=old.goal.crossings, ,group=Condition,fill=Housing))+
+  geom_boxplot()+
+  scale_fill_brewer(palette="Greys")+
+  theme_classic(base_size = 12)+
+  theme(legend.position = c(.5, .7))+
+  facet_grid(~Strain)+
+  labs(x="Condition",
+       y="Number of goal crossings",
+       title="Probe Trial old goal crossings 13-14mo mice")
+```
+### 3mo Probe Trial old goal crossings Plots {#anchor54.71}
+```{r awesome plots probe trial 5,fig.width=3.3,fig.height=3}
+mo3.probe  %>%
+ggplot(aes(x='',y=old.goal.crossings, ,group=Condition,fill=Housing))+
+  geom_boxplot()+
+  scale_fill_brewer(palette="Greys")+
+  theme_classic(base_size = 12)+
+  theme(legend.position = "none")+
+  facet_grid(~Strain)+
+  labs(x="Condition",
+       y="Number of goal crossings",
+       title="Probe Trial old goal crossings 3mo mice")
+```
+### Facet grid old goal crossings Plot {#anchor54.72}
+```{r awesome plots fc probe trial 6,fig.width=5,fig.height=4}
+Results.paper.probe  %>%
+ggplot(aes(x='Condition',y=old.goal.crossings, ,group=Condition,fill=Condition))+
+  geom_boxplot()+
+  scale_fill_brewer(palette="Greys")+
+  theme_classic(base_size = 12)+
+  facet_grid(~factor(Age_group))+
+   labs(x="Condition",
+       y="Goal crossings",
+       title="Probe Trial old goal crossings all mice")
+```
+## Visualization
+
+```{r,fig.width=4,fig.height=3}
+probs.pub.red=filter(probs.pub, Age_group=='3'|Age_group=='13-14')
+probs.pub3=mutate(probs.pub3, `Strain`=fct_relevel(`Strain`,"WT","dTg","APPswe","PS1dE9"))
+probs.pub13=mutate(probs.pub13, `Strain`=fct_relevel(`Strain`,"WT","dTg","APPswe","PS1dE9"))
+probs.pub.red  %>%
+mutate(probs.pub.red, `Strain`=fct_relevel(`Strain`,"WT","dTg","APPswe","PS1dE9"))%>%
+ggplot()+
+  geom_segment(data=probs.pub3, aes(x=Strain,xend=Strain, y=0.5,yend=Probability,color=Age_group))+
+  geom_segment(data=probs.pub13, aes(x=Strain,xend=Strain, y=0.5,yend=Probability,color=Age_group))+
+  geom_point(data=probs.pub.red, aes(x=Strain,y=Probability,color=Age_group,shape=Housing),size=2)+
+  facet_grid(~factor(Experiment_Phase, levels=c('ACQ','REV','BOTH')))+
+  scale_shape_manual(values=c(16,1))+
+  
+  coord_flip()+
+  geom_hline(yintercept = .5, linetype="dotted", 
+                color = "red", size=.5)
+```
+
+
 # References {#ref}
