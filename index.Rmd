@@ -123,6 +123,27 @@ write_bib(file = "r-packages.bib")
   * [13 moProbe Trial old goal crossings Plots](#anchor54.7)
   * [3 mo Probe Trial old goal crossings Plots](#anchor54.71)
     * [Facet grid Probe Trial old goal crossings Plots](#anchor54.72)
+* [Statistics](#statistics)
+  * [Path length]()
+    * [2-Way ANOVA (path length)](#2way-anova)
+    * [1-Way ANOVA Strain (path length)](#anova-pathlength)
+    * [1-Way ANOVA Housing (path length)](#anova-pathlength-housing)
+  * [Latency]()
+    * [1-Way ANOVA Strain (latency)](#anova-latency)
+    * [1-Way ANOVA Housing (latency)](#anova-latency-housing)
+  * [Mean velocity]()
+    * [1-Way ANOVA Strain (mean velocity)](#anova-velocity)
+    * [1-Way ANOVA Housing (mean velocity)](#anova-velocity-housing)
+  * [Probe Trial]()
+    * [Time in goal quadrant]()
+      * [1-Way ANOVA Strain (time.in.zone.n.quadrant)](#anova-probe-time-in-goal-quadrant)
+      * [1-Way ANOVA Strain (time.in.zone.n.quadrant)](#anova-probe-time-in-goal-quadrant-housing)
+    * [Old goal crossings]()
+      * [1-Way ANOVA Strain (old.goal.crossings)](#anova-probe-old-goal-crossings)
+      * [1-Way ANOVA Strain (old.goal.crossings)](#anova-probe-old-goal-crossings-housing)
+  * [Strategy probabilities]()
+    * [1-Way ANOVA Strain (Strategy probabilities)](#anova-strategy-probabilities)
+    * [1-Way ANOVA Strain (Strategy probabilities)](#anova-strategy- probabilities-housing)
 * [References](#ref)
  
 
@@ -2537,6 +2558,7 @@ ggplot(aes(x=`_Day`,y=path.length, ,group=Condition))+
        y="Path length [cm]",
        title="Mean Path Length 13-14mo mice")
 ```
+
 ## Mean Path Length Plots 3 {#anchor54.31}
 ```{r awesome plots path length 4,fig.width=4,fig.height=3}
 mo3  %>%
@@ -2555,6 +2577,7 @@ ggplot(aes(x=`_Day`,y=path.length, ,group=Condition))+
        y="Path length [cm]",
        title="Mean Path Length 3mo mice")
 ```
+
 ## Probe Trial time in goal quadrant Plots {#anchor54.4}
 ```{r awesome plots probe trial 1,fig.width=3.5,fig.height=3}
 mo14.probe  %>%
@@ -2604,6 +2627,7 @@ ggplot(aes(x='',y=old.goal.crossings, ,group=Condition,fill=Housing))+
        y="Number of goal crossings",
        title="Probe Trial old goal crossings 13-14mo mice")
 ```
+
 ### 3mo Probe Trial old goal crossings Plots {#anchor54.71}
 ```{r awesome plots probe trial 5,fig.width=3.3,fig.height=3}
 mo3.probe  %>%
@@ -2617,6 +2641,7 @@ ggplot(aes(x='',y=old.goal.crossings, ,group=Condition,fill=Housing))+
        y="Number of goal crossings",
        title="Probe Trial old goal crossings 3mo mice")
 ```
+
 ### Facet grid old goal crossings Plot {#anchor54.72}
 ```{r awesome plots fc probe trial 6,fig.width=5,fig.height=4}
 Results.paper.probe  %>%
@@ -2649,5 +2674,397 @@ ggplot()+
                 color = "red", size=.5)
 ```
 
+# Statistics {#statistics}
+
+```{r}
+test.aov2 = aov(path.length ~ Housing + Strain, data=Results.paper)
+summary(test.aov2)
+```
+## <br>
+
+## 2-Way ANOVA (path length) {.tabset .tabset-fade .tabset-pills #two-way-anova}
+  
+***  
+
+### 3 & 13-14 additive 
+```{r}
+test.aov2 = aov(path.length ~ Housing + Strain, data=Results.paper)
+summary(test.aov2)
+```
+
+### 3 additive
+```{r}
+test.aov2 = aov(path.length ~ Housing + Strain, data=mo3)
+summary(test.aov2)
+```
+
+### 13-14 additive
+```{r}
+test.aov2 = aov(path.length ~ Housing + Strain, data=mo14)
+summary(test.aov2)
+```
+
+### 3 & 13-14 interactive
+```{r}
+test.aov2 = aov(path.length ~ Housing * Strain, data=Results.paper)
+summary(test.aov2)
+```
+
+## <br>
+
+Different `levels` of Strain are associated with significant different path length.
+
+P-value for the interaction between Housing*Strain is ... --> relationship between Housing and Strain depends on the Housing method
+
+## 1-Way ANOVA Strain (path length) {.tabset .tabset-fade .tabset-pills #anova-pathlength}
+  
+***  
+
+### 3 & 13-14 Strain
+```{r}
+test.aov2 = aov(path.length ~ Strain, data=Results.paper)
+TukeyHSD(test.aov2)
+```
+  
+### 3 Strain
+```{r}
+test.aov2 = aov(path.length ~ Strain, data=mo3)
+TukeyHSD(test.aov2)
+```
+  
+### 13-14 Strain
+```{r}
+test.aov2 = aov(path.length ~ Strain, data=mo14)
+TukeyHSD(test.aov2)
+```
+
+
+## <br>
+
+## 1-Way ANOVA Housing (path length) {.tabset .tabset-fade .tabset-pills #anova-pathlength-housing}
+  
+***  
+
+### 3 & 13-14 Housing
+```{r}
+test.aov2 = aov(path.length ~ Housing, data=Results.paper)
+TukeyHSD(test.aov2)
+```
+differences for 3 & 13-14 Model depend on age group differences
+  
+### 3 Housing
+```{r}
+test.aov2 = aov(path.length ~ Housing, data=mo3)
+TukeyHSD(test.aov2)
+```
+  
+### 13-14 Housing
+```{r}
+test.aov2 = aov(path.length ~ Housing, data=mo14)
+TukeyHSD(test.aov2)
+```
+
+
+## <br>
+
+## 1-Way ANOVA Strain (latency.to.goal) {.tabset .tabset-fade .tabset-pills #anova-latency}
+  
+***  
+
+### 3 & 13-14 Strain
+```{r}
+test.aov2 = aov(latency.to.goal ~ Strain, data=Results.paper)
+TukeyHSD(test.aov2)
+```
+  
+### 3 Strain
+```{r}
+test.aov2 = aov(latency.to.goal ~ Strain, data=mo3)
+TukeyHSD(test.aov2)
+```
+  
+### 13-14 Strain
+```{r}
+test.aov2 = aov(latency.to.goal ~ Strain, data=mo14)
+TukeyHSD(test.aov2)
+```
+
+
+## <br>
+
+## 1-Way ANOVA Housing (Latency) {.tabset .tabset-fade .tabset-pills #anova-latency-housing}
+  
+***  
+
+### 3 & 13-14 Housing
+```{r}
+test.aov2 = aov(latency.to.goal ~ Housing, data=Results.paper)
+TukeyHSD(test.aov2)
+```
+differences for 3 & 13-14 Model depend on age group differences
+  
+### 3 Housing
+```{r}
+test.aov2 = aov(latency.to.goal ~ Housing, data=mo3)
+TukeyHSD(test.aov2)
+```
+  
+### 13-14 Housing
+```{r}
+test.aov2 = aov(latency.to.goal ~ Housing, data=mo14)
+TukeyHSD(test.aov2)
+
+```
+
+
+## <br>
+
+## 1-Way ANOVA Strain (mean.velocity) {.tabset .tabset-fade .tabset-pills #anova-velocity}
+  
+***  
+
+### Age groups
+```{r}
+test.aov2 = aov(mean.velocity ~ Age_group, data=Results.paper)
+TukeyHSD(test.aov2)
+
+t.test(mo3$mean.velocity,mo14$mean.velocity)
+```
+
+### 3 & 13-14 Strain
+```{r}
+test.aov2 = aov(mean.velocity ~ Strain, data=Results.paper)
+TukeyHSD(test.aov2)
+```
+  
+### 3 Strain
+```{r}
+test.aov2 = aov(mean.velocity ~ Strain, data=mo3)
+TukeyHSD(test.aov2)
+```
+  
+### 13-14 Strain
+```{r}
+test.aov2 = aov(mean.velocity ~ Strain, data=mo14)
+TukeyHSD(test.aov2)
+```
+
+
+## <br>
+
+## 1-Way ANOVA Housing (mean.velocity) {.tabset .tabset-fade .tabset-pills #anova-velocity-housing}
+  
+***  
+
+### 3 & 13-14 Housing
+```{r}
+test.aov2 = aov(mean.velocity ~ Housing, data=Results.paper)
+TukeyHSD(test.aov2)
+```
+differences for 3 & 13-14 Model depend on age group differences
+  
+### 3 Housing
+```{r}
+test.aov2 = aov(mean.velocity ~ Housing, data=mo3)
+TukeyHSD(test.aov2)
+```
+  
+### 13-14 Housing
+```{r}
+test.aov2 = aov(mean.velocity ~ Housing, data=mo14)
+TukeyHSD(test.aov2)
+
+```
+
+
+## <br>
+
+## 1-Way ANOVA Strain (time.in.zone.n.quadrant) {.tabset .tabset-fade .tabset-pills #anova-probe-time-in-goal-quadrant}
+  
+***  
+
+### 3 & 13-14 Strain
+```{r}
+test.aov2 = aov(time.in.zone.n.quadrant ~ Strain, data=Results.paper.probe)
+TukeyHSD(test.aov2)
+```
+  
+### 3 Strain
+```{r}
+test.aov2 = aov(time.in.zone.n.quadrant ~ Strain, data=mo3.probe)
+TukeyHSD(test.aov2)
+```
+  
+### 13-14 Strain
+```{r}
+test.aov2 = aov(time.in.zone.n.quadrant ~ Strain, data=mo14.probe)
+TukeyHSD(test.aov2)
+```
+
+
+## <br>
+
+## 1-Way ANOVA Housing (time.in.zone.n.quadrant) {.tabset .tabset-fade .tabset-pills #anova-probe-time-in-goal-quadrant-housing}
+  
+***  
+
+### 3 & 13-14 Housing
+```{r}
+test.aov2 = aov(time.in.zone.n.quadrant ~ Housing, data=Results.paper.probe)
+TukeyHSD(test.aov2)
+```
+differences for 3 & 13-14 Model depend on age group differences
+  
+### 3 Housing
+```{r}
+test.aov2 = aov(time.in.zone.n.quadrant ~ Housing, data=mo3.probe)
+TukeyHSD(test.aov2)
+```
+  
+### 13-14 Housing
+```{r}
+test.aov2 = aov(time.in.zone.n.quadrant ~ Housing, data=mo14.probe)
+TukeyHSD(test.aov2)
+
+```
+
+
+## <br>
+
+## 1-Way ANOVA Strain (old.goal.crossings) {.tabset .tabset-fade .tabset-pills #anova-probe-old-goal-crossings}
+  
+***  
+
+### 3 & 13-14 Strain
+```{r}
+test.aov2 = aov(old.goal.crossings ~ Strain, data=Results.paper.probe)
+TukeyHSD(test.aov2)
+```
+  
+### 3 Strain
+```{r}
+test.aov2 = aov(old.goal.crossings ~ Strain, data=mo3.probe)
+TukeyHSD(test.aov2)
+```
+  
+### 13-14 Strain
+```{r}
+test.aov2 = aov(old.goal.crossings ~ Strain, data=mo14.probe)
+TukeyHSD(test.aov2)
+```
+
+
+## <br>
+
+## 1-Way ANOVA Housing (old.goal.crossings) {.tabset .tabset-fade .tabset-pills #anova-probe-old-goal-crossings-housing}
+  
+***  
+
+### 3 & 13-14 Housing
+```{r}
+test.aov2 = aov(old.goal.crossings ~ Housing, data=Results.paper.probe)
+TukeyHSD(test.aov2)
+```
+differences for 3 & 13-14 Model depend on age group differences
+  
+### 3 Housing
+```{r}
+test.aov2 = aov(old.goal.crossings ~ Housing, data=mo3.probe)
+TukeyHSD(test.aov2)
+```
+  
+### 13-14 Housing
+```{r}
+test.aov2 = aov(old.goal.crossings ~ Housing, data=mo14.probe)
+TukeyHSD(test.aov2)
+
+```
+
+
+## <br>
+
+## 1-Way ANOVA Strain (Strategy probabilities) {.tabset .tabset-fade .tabset-pills #anova-strategy-probabilities}
+  
+***  
+
+### 3 & 13-14 Strain
+```{r}
+test.aov2 = aov(Probability ~ Strain, data=probs.pub.red)
+TukeyHSD(test.aov2)
+```
+  
+
+  
+### 13-14 ACQ
+```{r}
+probs.pub13.ACQ=filter(probs.pub13, Experiment_Phase=='ACQ')
+test.aov2 = aov(Probability ~ Strain, data=probs.pub13.ACQ)
+TukeyHSD(test.aov2)
+```
+
+### 13-14 REV
+```{r}
+probs.pub13.REV=filter(probs.pub13, Experiment_Phase=='REV')
+test.aov2 = aov(Probability ~ Strain, data=probs.pub13.REV)
+TukeyHSD(test.aov2)
+```
+
+### 13-14 BOTH
+```{r}
+probs.pub13.BOTH=filter(probs.pub13, Experiment_Phase=='BOTH')
+test.aov2 = aov(Probability ~ Strain, data=probs.pub13.BOTH)
+TukeyHSD(test.aov2)
+```
+
+### 3 ACQ 
+```{r}
+probs.pub3.ACQ=filter(probs.pub3, Experiment_Phase=='ACQ')
+test.aov2 = aov(Probability ~ Strain, data=probs.pub3.ACQ)
+TukeyHSD(test.aov2)
+```
+
+### 3 REV
+```{r}
+probs.pub3.REV=filter(probs.pub3, Experiment_Phase=='REV')
+test.aov2 = aov(Probability ~ Strain, data=probs.pub3.REV)
+TukeyHSD(test.aov2)
+```
+
+### 3 BOTH
+```{r}
+probs.pub3.BOTH=filter(probs.pub3, Experiment_Phase=='BOTH')
+test.aov2 = aov(Probability ~ Strain, data=probs.pub3.BOTH)
+TukeyHSD(test.aov2)
+```
+
+
+## <br>
+
+## 1-Way ANOVA Housing (Strategy probabilities) {.tabset .tabset-fade .tabset-pills #anova-strategy-probabilities-housing}
+  
+***  
+
+### 3 & 13-14 Housing
+```{r}
+test.aov2 = aov(Probability ~ Housing, data=probs.pub.red)
+TukeyHSD(test.aov2)
+```
+differences for 3 & 13-14 Model depend on age group differences
+  
+### 3 Housing
+```{r}
+test.aov2 = aov(Probability ~ Housing, data=probs.pub3)
+TukeyHSD(test.aov2)
+```
+  
+### 13-14 Housing
+```{r}
+test.aov2 = aov(Probability ~ Housing, data=probs.pub13)
+TukeyHSD(test.aov2)
+
+```
+
+
+## <br>
 
 # References {#ref}
